@@ -5,3 +5,4 @@
 
 - Android Studio
 - Spring boot
+- MySQL
