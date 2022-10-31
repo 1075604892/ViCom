@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#FFEBEBEB"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:id="@+id/id_tab_talk"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/id_tab_talk_img"
+            android:layout_width="110dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/app_name"
+            android:clickable="false"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/talk" />
+
+        <TextView
+            android:id="@+id/id_tab_talk_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:clickable="false"
+            android:saveEnabled="false"
+            android:text="首页"
+            android:textColor="#191919"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_tab_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:clickable="false"
+            android:id="@+id/id_tab_list_img"
+            android:layout_width="110dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/list" />
+
+        <TextView
+            android:clickable="false"
+            android:id="@+id/id_tab_list_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:saveEnabled="false"
+            android:text="发现"
+            android:textColor="#191919"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_tab_find"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:clickable="false"
+            android:id="@+id/id_tab_find_img"
+            android:layout_width="110dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/find" />
+
+        <TextView
+            android:clickable="false"
+            android:id="@+id/id_tab_find_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:saveEnabled="false"
+            android:text="收藏"
+            android:textColor="#191919"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_tab_option"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:clickable="false"
+            android:id="@+id/id_tab_option_img"
+            android:layout_width="110dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/option" />
+
+        <TextView
+            android:clickable="false"
+            android:id="@+id/id_tab_option_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:saveEnabled="false"
+            android:text="我的"
+            android:textColor="#191919"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
