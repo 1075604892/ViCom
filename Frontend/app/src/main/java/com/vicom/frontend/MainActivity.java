@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.vicom.frontend.R;
+import com.vicom.frontend.activity.RegisterActivity;
 import com.vicom.frontend.fragment.FindFragment;
 import com.vicom.frontend.fragment.ListFragment;
 import com.vicom.frontend.fragment.OptionFragment;
@@ -132,7 +133,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private static void resetTab(FragmentTransaction fragmentTransaction){
+
+    public void registerTab(View view) {
+        Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    private static void resetTab(FragmentTransaction fragmentTransaction) {
         setTitle("聊吧");
         fragmentTransaction.hide(talkFragment);
         fragmentTransaction.hide(listFragment);
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction.hide(optionFragment);
     }
 
-    public static void setTitle(String text){
+    public static void setTitle(String text) {
         title.setText(text);
     }
 
