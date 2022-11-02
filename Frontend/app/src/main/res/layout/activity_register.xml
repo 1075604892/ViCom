@@ -14,6 +14,7 @@
       android:layout_marginTop="30dp"
       android:background="?android:attr/selectableItemBackground"
       android:clickable="true"
+      android:src="@drawable/user_icon"
       android:scaleType="fitXY"
       />
   <!--tips-->
@@ -26,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="基本信息 |"
+        android:text="基本信息（必填） |"
         android:textColor="@color/black"
         android:textStyle="bold" />
 
@@ -54,7 +55,7 @@
         android:text="用户名：" />
 
     <EditText
-        android:id="@+id/et_reg_nickname"
+        android:id="@+id/et_reg_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -140,7 +141,7 @@
         android:text="确认密码:" />
 
     <EditText
-        android:id="@+id/et_reg_pass_1"
+        android:id="@+id/et_reg_pass_repeat"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -188,7 +189,7 @@
         android:text="昵称:" />
 
     <EditText
-        android:id="@+id/et_reg_username"
+        android:id="@+id/et_reg_nickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -253,6 +254,9 @@
         android:layout_width="366dp"
         android:layout_height="59dp"
         android:text="注册"
+        android:color="@color/black"
+        android:backgroundTint="#5865F2"
+        android:onClick="submitRegister"
         android:textColor="@color/white" />
   </LinearLayout>
 

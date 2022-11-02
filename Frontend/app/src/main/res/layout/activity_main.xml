@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <stroke
-        android:width="1px"
-        android:color="@color/light_grey" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <corners android:radius="20dip" />
-    <solid android:color="@color/light_gray2" />
-</shape>
+    <include layout="@layout/top" />
+    <FrameLayout
+        android:id="@+id/id_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
+    </FrameLayout>
+
+    <include layout="@layout/button" />
+</LinearLayout>
 

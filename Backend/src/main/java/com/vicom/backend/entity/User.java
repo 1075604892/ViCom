@@ -20,7 +20,7 @@ public class User implements Serializable {
     private Long id;
     private String username;
     private String password;
-    private String name;
+    private String nickname;
     // 性别 0：女性 1：男性 2：不公布
     private Integer sex;
     private String icon;

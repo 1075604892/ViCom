@@ -22,8 +22,8 @@ public class UserService {
             return R.error("注册失败，该用户名已被使用");
         }
 
-        if (user.getName() == null) {
-            user.setName(user.getUsername());
+        if (user.getNickname() == null) {
+            user.setNickname(user.getUsername());
         }
 
         if (user.getSex() == null) {
