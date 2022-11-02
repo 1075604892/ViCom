@@ -21,4 +21,11 @@ public class UserController {
         System.out.println(user.toString());
         return userService.register(user);
     }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public R<Object> login(@RequestBody User user) {
+        System.out.println(user.toString());
+        return userService.login(user);
+    }
 }

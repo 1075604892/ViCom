@@ -1,16 +1,17 @@
 package com.vicom.frontend.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vicom.frontend.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 
@@ -23,12 +24,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import android.os.Handler;
-import android.os.Message;
-import android.os.Bundle;
-import android.widget.Toast;
-
-public class RegisterActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,33 +35,25 @@ public class RegisterActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_login);
 
-        //隐藏密码框
-        ((EditText) findViewById(R.id.et_reg_pass)).setTransformationMethod(PasswordTransformationMethod.getInstance());
-        ((EditText) findViewById(R.id.et_reg_pass_repeat)).setTransformationMethod(PasswordTransformationMethod.getInstance());
+        //修改UI
+        ((EditText) findViewById(R.id.et_login_pass)).setTransformationMethod(PasswordTransformationMethod.getInstance());
+        ((TextView) findViewById(R.id.tvtitle)).setText("登录");
     }
 
-    public void submitRegister(View view) {
-        String username = ((EditText) findViewById(R.id.et_reg_username)).getText().toString();
-        String email = ((EditText) findViewById(R.id.et_reg_email)).getText().toString();
-        String password = ((EditText) findViewById(R.id.et_reg_pass)).getText().toString();
-        String passwordRepeat = ((EditText) findViewById(R.id.et_reg_pass_repeat)).getText().toString();
-
-        String nickname = ((EditText) findViewById(R.id.et_reg_nickname)).getText().toString();
-        //获取性别
-        //todo
+    public void submitLogin(View view) {
+        String username = ((EditText) findViewById(R.id.et_login_username)).getText().toString();
+        String password = ((EditText) findViewById(R.id.et_login_pass)).getText().toString();
 
         JSONObject json = new JSONObject();
         try {
             json.put("username", username);
-            json.put("email", email);
             json.put("password", password);
-            json.put("nickname", nickname);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        postRegisterData(json);
+        postLoginData(json);
     }
 
     public void quit(View view) {
@@ -74,12 +62,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             //System.out.println("主线程收到子线程处理消息的结果");
-            Toast.makeText(RegisterActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
 
             if (msg.what == 1) {
-                //注册成功，退出注册界面
+                //登录成功，退出注册界面
                 onBackPressed();
             }
         }
@@ -87,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         ;
     };
 
-    public void postRegisterData(JSONObject json) {
+    public void postLoginData(JSONObject json) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -97,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
                             // 指定访问的服务器地址
-                            .url(MyConfiguration.HOST + "/user/register").post(requestBody)
+                            .url(MyConfiguration.HOST + "/user/login").post(requestBody)
                             .build();
                     Response response = client.newCall(request).execute();
 

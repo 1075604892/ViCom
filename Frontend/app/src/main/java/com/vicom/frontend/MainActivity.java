@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.vicom.frontend.R;
+import com.vicom.frontend.activity.LoginActivity;
 import com.vicom.frontend.activity.RegisterActivity;
 import com.vicom.frontend.fragment.FindFragment;
 import com.vicom.frontend.fragment.ListFragment;
@@ -87,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         optionLinear.setOnClickListener(this);
     }
 
+    public void hid(){
+        System.out.println("nini");
+    }
+
     private static void changeTab(int i) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -136,6 +141,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void registerTab(View view) {
         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    public void loginTab(View view) {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 

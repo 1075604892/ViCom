@@ -11,10 +11,18 @@
         android:text="选项界面" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_jump_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:onClick="registerTab"
         android:text="点此注册" />
+
+    <Button
+        android:id="@+id/button_jump_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="loginTab"
+        android:text="点此登录" />
 </LinearLayout>

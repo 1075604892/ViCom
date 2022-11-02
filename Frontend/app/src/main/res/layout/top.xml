@@ -4,17 +4,17 @@
     android:layout_height="65dp"
     android:gravity="center"
     android:background="#FFEBEBEB"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     >
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:textColor="#191919"
         android:text="ViCom"
+        android:textAlignment="center"
         android:textSize="30sp"
         />
 </LinearLayout>

@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_view"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="#FFEBEBEB"
+    android:gravity="center_vertical" >
+
+    <TextView
+        android:id="@+id/tvtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="注册"
+        android:textSize="30sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#191919" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="5dp"
+        android:onClick="quit"
+        >
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/quit" />
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="65dp"-->
+<!--    android:gravity="center"-->
+<!--    android:background="#FFEBEBEB"-->
+<!--    android:orientation="horizontal"-->
+<!--    >-->
+
+<!--    <ImageButton-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="#191919"-->
+<!--        android:text="注册"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="30sp"-->
+<!--        />-->
+<!--</LinearLayout>-->

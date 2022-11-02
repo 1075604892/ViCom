@@ -13,7 +13,9 @@ public class UserService {
 
     public R<String> register(User user) {
         // 判断是否有必填字段为空
-        if (user.getUsername() == null || user.getEmail() == null || user.getPassword() == null) {
+        if (user.getUsername() == null || user.getEmail() == null || user.getPassword() == null
+                || "".equals(user.getUsername()) || "".equals(user.getEmail()) || "".equals(user.getPassword())
+        ) {
             return R.error("注册失败，必填字段为空");
         }
 
@@ -39,5 +41,14 @@ public class UserService {
         user.setStatus(User.STATUS_NORMAL);
         userRepository.save(user);
         return R.success("注册成功");
+    }
+
+    public R<Object> login(User user) {
+        System.out.println(user.toString());
+        if (userRepository.existsByUsernameAndPassword(user.getUsername(), user.getPassword())) {
+            return R.success("登录成功");
+        }
+
+        return R.error("登录失败，用户名或密码错误");
     }
 }

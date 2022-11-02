@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-  <include layout="@layout/top" />
+  <include layout="@layout/top_register" />
 
   <ImageView
       android:id="@+id/IV_user_icno_register"
@@ -17,6 +18,7 @@
       android:src="@drawable/user_icon"
       android:scaleType="fitXY"
       />
+
   <!--tips-->
   <LinearLayout
       android:layout_width="wrap_content"
@@ -250,7 +252,7 @@
       >
 
     <Button
-        android:id="@+id/loginPage_login"
+        android:id="@+id/register_button"
         android:layout_width="366dp"
         android:layout_height="59dp"
         android:text="注册"

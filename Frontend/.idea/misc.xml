@@ -6,8 +6,9 @@
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26979166666666665" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/input.xml" value="0.26979166666666665" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_login.xml" value="0.2140625" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_register.xml" value="0.2986111111111111" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_register.xml" value="0.2" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/button.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/find_tab.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/input.xml" value="0.25364583333333335" />
@@ -16,6 +17,7 @@
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/talk_tab.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/test.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/top.xml" value="0.25364583333333335" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/top_register.xml" value="0.264" />
       </map>
     </option>
   </component>
