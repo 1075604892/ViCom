@@ -2,14 +2,18 @@ package com.vicom.frontend.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,10 +24,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
+import com.vicom.frontend.activity.RegisterActivity;
 import com.vicom.frontend.entity.Community;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +54,7 @@ public class TalkFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View view;
 
     //聊天列表
     private List<Community> communities = new ArrayList<Community>();
@@ -76,42 +91,16 @@ public class TalkFragment extends Fragment {
     }
 
     RecyclerView mRecyclerView;
-    MyAdapter mMyAdapter ;
+    MyAdapter mMyAdapter;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.talk_tab, container, false);
+        view = inflater.inflate(R.layout.talk_tab, container, false);
 
-        /*webView = (WebView) view.findViewById(R.id.home);
-
-        webView.loadUrl(MyConfiguration.HOST);
-
-        WebSettings webSettings=webView.getSettings();
-
-        webSettings.setJavaScriptEnabled(true);
-
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //使用WebView加载显示url
-                view.loadUrl(url);
-                //返回true
-                return true;
-            }
-        });
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //使用WebView加载显示url
-                view.loadUrl(url);
-                //返回true
-                return true;
-            }
-        });*/
-        mRecyclerView = view.findViewById(R.id.community_list);
+        /*mRecyclerView = view.findViewById(R.id.community_list);
         // 构造一些数据
         for (int i = 0; i < 10; i++) {
             //News news = new News();
@@ -125,7 +114,15 @@ public class TalkFragment extends Fragment {
         mMyAdapter = new MyAdapter();
         mRecyclerView.setAdapter(mMyAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(gridLayoutManager);*/
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        postFollowCommunitiesData(json);
 
         return view;
     }
@@ -153,10 +150,88 @@ public class TalkFragment extends Fragment {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTv;
+        ImageView imageView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitleTv = itemView.findViewById(R.id.community_name);
+            imageView = itemView.findViewById(R.id.community_image);
         }
+    }
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            //System.out.println("主线程收到子线程处理消息的结果");
+            mRecyclerView = view.findViewById(R.id.community_list);
+
+            String str = msg.obj.toString().replace("[", "").replace("]", "");
+            String[] result = str.split("\\},");
+            for (int i = 0; i < result.length; i++) {
+                //JSONObject jsonObject =
+                if (i < result.length - 1) {
+                    result[i] += "}";
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject(result[i]);
+                    Community community = new Community();
+                    community.setName(jsonObject.getString("name"));
+                    communities.add(community);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // 构造一些数据
+            /*for (int i = 0; i < 10; i++) {
+                //News news = new News();
+                //news.title = "标题" + i;
+                //news.content = "内容" + i;
+                Community community = new Community();
+                community.setName(i + "吧");
+                communities.add(community);
+                //mNewsList.add(news);
+            }*/
+            mMyAdapter = new MyAdapter();
+            mRecyclerView.setAdapter(mMyAdapter);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
+            mRecyclerView.setLayoutManager(gridLayoutManager);
+        }
+
+        ;
+    };
+
+    public void postFollowCommunitiesData(JSONObject json) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaType type = MediaType.parse("application/json;charset=utf-8");
+                RequestBody requestBody = RequestBody.create(type, json.toString());
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            // 指定访问的服务器地址
+                            .url(MyConfiguration.HOST + "/community/favoriteCommunities").post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                    JSONObject responseJson = new JSONObject(response.body().string());
+
+                    //处理返回内容
+                    Message message = new Message();
+                    message.what = responseJson.getInt("code");
+
+                    if (responseJson.getInt("code") == 0) {
+                        message.obj = responseJson.getString("msg");
+                    } else {
+                        message.obj = responseJson.getString("data");
+                    }
+
+                    mHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
