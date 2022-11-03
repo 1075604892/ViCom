@@ -1,15 +1,29 @@
 package com.vicom.frontend.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.vicom.frontend.MainActivity;
+import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
+import com.vicom.frontend.entity.Community;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +42,7 @@ public class TalkFragment extends Fragment {
     private String mParam2;
 
     //聊天列表
-    private ListView talkListView;
+    private List<Community> communities = new ArrayList<Community>();
 
     public TalkFragment() {
         // Required empty public constructor
@@ -61,9 +75,88 @@ public class TalkFragment extends Fragment {
         }
     }
 
+    RecyclerView mRecyclerView;
+    MyAdapter mMyAdapter ;
+
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.talk_tab, container, false);
+
+        View view = inflater.inflate(R.layout.talk_tab, container, false);
+
+        /*webView = (WebView) view.findViewById(R.id.home);
+
+        webView.loadUrl(MyConfiguration.HOST);
+
+        WebSettings webSettings=webView.getSettings();
+
+        webSettings.setJavaScriptEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                //使用WebView加载显示url
+                view.loadUrl(url);
+                //返回true
+                return true;
+            }
+        });
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                //使用WebView加载显示url
+                view.loadUrl(url);
+                //返回true
+                return true;
+            }
+        });*/
+        mRecyclerView = view.findViewById(R.id.community_list);
+        // 构造一些数据
+        for (int i = 0; i < 10; i++) {
+            //News news = new News();
+            //news.title = "标题" + i;
+            //news.content = "内容" + i;
+            Community community = new Community();
+            community.setName(i + "吧");
+            communities.add(community);
+            //mNewsList.add(news);
+        }
+        mMyAdapter = new MyAdapter();
+        mRecyclerView.setAdapter(mMyAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        return view;
+    }
+
+    class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = View.inflate(getContext(), R.layout.item_community_list, null);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            holder.mTitleTv.setText(communities.get(position).getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return communities.size();
+        }
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView mTitleTv;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mTitleTv = itemView.findViewById(R.id.community_name);
+        }
     }
 }
