@@ -1,7 +1,6 @@
 package com.vicom.frontend.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,25 +8,17 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
-import com.vicom.frontend.activity.RegisterActivity;
 import com.vicom.frontend.entity.Community;
 
 import org.json.JSONException;
@@ -130,9 +121,11 @@ public class TalkFragment extends Fragment {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("点击" + communities.get(position).getCid());
                     Intent intent = new Intent(v.getContext(), PostListActivity.class);
                     intent.putExtra("cid", communities.get(position).getCid());
+                    intent.putExtra("name", communities.get(position).getName());
+                    intent.putExtra("description", communities.get(position).getDescription());
+                    intent.putExtra("cover", communities.get(position).getCover_path());
                     startActivity(intent);
                 }
             });
@@ -172,6 +165,8 @@ public class TalkFragment extends Fragment {
                     Community community = new Community();
                     community.setName(jsonObject.getString("name"));
                     community.setCid(jsonObject.getString("id"));
+                    community.setDescription(jsonObject.getString("description"));
+                    community.setCover_path(jsonObject.getString("cover"));
                     communities.add(community);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -182,8 +177,6 @@ public class TalkFragment extends Fragment {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
             mRecyclerView.setLayoutManager(gridLayoutManager);
         }
-
-        ;
     };
 
     public void postFollowCommunitiesData(JSONObject json) {

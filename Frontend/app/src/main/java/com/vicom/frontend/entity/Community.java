@@ -4,6 +4,7 @@ public class Community {
     private String name;
     private String cover_path;
     private String cid;
+    private String description;
 
     public String getCid() {
         return cid;
@@ -27,5 +28,13 @@ public class Community {
 
     public void setCid(String cid) {
         this.cid = cid;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

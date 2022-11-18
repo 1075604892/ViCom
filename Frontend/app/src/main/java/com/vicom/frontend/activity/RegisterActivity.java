@@ -3,14 +3,13 @@ package com.vicom.frontend.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 
@@ -25,8 +24,6 @@ import okhttp3.Response;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.Bundle;
-import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,6 +37,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_register);
+
+        //修改UI
+        ((TextView) findViewById(R.id.tvtitle)).setText("注册");
 
         //隐藏密码框
         ((EditText) findViewById(R.id.et_reg_pass)).setTransformationMethod(PasswordTransformationMethod.getInstance());

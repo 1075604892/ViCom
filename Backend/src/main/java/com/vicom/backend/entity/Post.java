@@ -25,7 +25,7 @@ public class Post {
     private String title;//标题
     private String content;//内容
     private Integer type;//帖子类型
-    private Integer picNum;//图片数
+    private String picUrl;//图片地址
 
     public static final Integer TYPE_POST = 0;
     public static final Integer TYPE_SUBPOST = 1;
