@@ -51,13 +51,19 @@ public class PostListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_post_list);
 
+
+        Intent intent = getIntent();
+        //获取Intent中暂存的数据
+        String name = intent.getStringExtra("name");
+        String cid = intent.getStringExtra("cid");
+
         //修改UI
-        ((TextView) findViewById(R.id.tvtitle)).setText("社区");
+        ((TextView) findViewById(R.id.tvtitle)).setText(name);
 
         //获取帖子
         JSONObject json = new JSONObject();
         try {
-            json.put("cid", 1);
+            json.put("cid", cid);
             json.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -71,6 +77,7 @@ public class PostListActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = View.inflate(PostListActivity.this, R.layout.item_post_list, null);
+
             MyViewHolder myViewHolder = new MyViewHolder(view);
             return myViewHolder;
         }
@@ -80,6 +87,12 @@ public class PostListActivity extends AppCompatActivity {
             holder.usernameTv.setText(posts.get(position).getUsername());
             holder.contentTv.setText(posts.get(position).getContent());
             holder.titleTv.setText(posts.get(position).getTitle());
+            holder.itemPostView.setOnClickListener(v -> {
+                //Intent intent = new Intent(v.getContext(), PostListActivity.class);
+                //intent.putExtra("pid", posts.get(position).getId());
+                //startActivity(intent);
+                System.out.println(posts.get(position).getId());
+            });
         }
 
         @Override
@@ -92,12 +105,14 @@ public class PostListActivity extends AppCompatActivity {
         TextView usernameTv;
         TextView titleTv;
         TextView contentTv;
+        View itemPostView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameTv = itemView.findViewById(R.id.post_username);
             titleTv = itemView.findViewById(R.id.post_title);
             contentTv = itemView.findViewById(R.id.post_content);
+            itemPostView = itemView.findViewById(R.id.item_post_tab);
         }
     }
 
@@ -169,5 +184,10 @@ public class PostListActivity extends AppCompatActivity {
 
     public void quit(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

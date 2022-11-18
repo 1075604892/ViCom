@@ -18,6 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;//帖子id
     private Long cid;//所在论坛id
+    private Long pid;//所在帖子id
 
     private Long rid;//被回复帖子id
 

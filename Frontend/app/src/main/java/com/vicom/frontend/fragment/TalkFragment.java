@@ -118,16 +118,13 @@ public class TalkFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(communities.get(position).getName());
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), PostListActivity.class);
-                    intent.putExtra("cid", communities.get(position).getCid());
-                    intent.putExtra("name", communities.get(position).getName());
-                    intent.putExtra("description", communities.get(position).getDescription());
-                    intent.putExtra("cover", communities.get(position).getCover_path());
-                    startActivity(intent);
-                }
+            holder.imageView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), PostListActivity.class);
+                intent.putExtra("cid", communities.get(position).getCid());
+                intent.putExtra("name", communities.get(position).getName());
+                intent.putExtra("description", communities.get(position).getDescription());
+                intent.putExtra("cover", communities.get(position).getCover_path());
+                startActivity(intent);
             });
         }
 
