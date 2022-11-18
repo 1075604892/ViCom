@@ -16,13 +16,16 @@ import javax.persistence.Id;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long uid;
-    private Long rid;
-    private String title;
-    private String content;
-    private Integer type;
-    private Integer picNum;
+    private Long id;//帖子id
+    private Long cid;//所在论坛id
+
+    private Long rid;//被回复帖子id
+
+    private Long uid;//发帖者
+    private String title;//标题
+    private String content;//内容
+    private Integer type;//帖子类型
+    private Integer picNum;//图片数
 
     public static final Integer TYPE_POST = 0;
     public static final Integer TYPE_SUBPOST = 1;

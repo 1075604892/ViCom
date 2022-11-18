@@ -1,6 +1,8 @@
 package com.vicom.frontend.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
+import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.activity.RegisterActivity;
 import com.vicom.frontend.entity.Community;
 
@@ -100,22 +103,6 @@ public class TalkFragment extends Fragment {
 
         view = inflater.inflate(R.layout.talk_tab, container, false);
 
-        /*mRecyclerView = view.findViewById(R.id.community_list);
-        // 构造一些数据
-        for (int i = 0; i < 10; i++) {
-            //News news = new News();
-            //news.title = "标题" + i;
-            //news.content = "内容" + i;
-            Community community = new Community();
-            community.setName(i + "吧");
-            communities.add(community);
-            //mNewsList.add(news);
-        }
-        mMyAdapter = new MyAdapter();
-        mRecyclerView.setAdapter(mMyAdapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(gridLayoutManager);*/
-
         JSONObject json = new JSONObject();
         try {
             json.put("id", 1);
@@ -138,8 +125,17 @@ public class TalkFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(communities.get(position).getName());
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("点击" + communities.get(position).getCid());
+                    Intent intent = new Intent(v.getContext(), PostListActivity.class);
+                    intent.putExtra("cid", communities.get(position).getCid());
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -168,7 +164,6 @@ public class TalkFragment extends Fragment {
             String str = msg.obj.toString().replace("[", "").replace("]", "");
             String[] result = str.split("\\},");
             for (int i = 0; i < result.length; i++) {
-                //JSONObject jsonObject =
                 if (i < result.length - 1) {
                     result[i] += "}";
                 }
@@ -176,22 +171,12 @@ public class TalkFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(result[i]);
                     Community community = new Community();
                     community.setName(jsonObject.getString("name"));
+                    community.setCid(jsonObject.getString("id"));
                     communities.add(community);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
-            // 构造一些数据
-            /*for (int i = 0; i < 10; i++) {
-                //News news = new News();
-                //news.title = "标题" + i;
-                //news.content = "内容" + i;
-                Community community = new Community();
-                community.setName(i + "吧");
-                communities.add(community);
-                //mNewsList.add(news);
-            }*/
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
