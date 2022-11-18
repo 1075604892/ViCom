@@ -8,7 +8,7 @@
     <include layout="@layout/top_register" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/post_list_by_community"
+        android:id="@+id/reply_list_by_post"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"

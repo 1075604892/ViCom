@@ -42,7 +42,7 @@ public class PostService {
     }
 
     public R<ArrayList<ResponseSubPost>> findSubPostsByPid(Long pid, Pageable pageable) {
-        Page<Post> posts = postRepository.findByPidAndTypeOrType(pid, Post.TYPE_SUBPOST, Post.TYPE_REPLY, pageable);
+        Page<Post> posts = postRepository.findByPid(pid, pageable);
 
         ArrayList<ResponseSubPost> responseSubPosts = new ArrayList<>();
         for (Post post : posts) {
