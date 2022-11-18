@@ -81,6 +81,7 @@ public class PostListActivity extends AppCompatActivity {
             holder.usernameTv.setText(posts.get(position).getUsername());
             holder.contentTv.setText(posts.get(position).getContent());
             holder.titleTv.setText(posts.get(position).getTitle());
+
             holder.itemPostView.setOnClickListener(v -> {
                 Intent intent = new Intent(PostListActivity.this, ReplyListActivity.class);
                 intent.putExtra("pid", posts.get(position).getId());

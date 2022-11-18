@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Frontend"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.ReplyListActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.PostListActivity"
             android:exported="false"
             android:label="@string/title_activity_post_list"

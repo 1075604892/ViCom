@@ -4,7 +4,7 @@ public class SubPost {
     private String id;//帖子id
     private String username;//用户名
     private String iconUrl;//头像url
-    private Long rid;
+    private String rid;
 
     private String replyName; //被回复人id
     private String type;
@@ -47,7 +47,7 @@ public class SubPost {
         return type;
     }
 
-    public Long getRid() {
+    public String getRid() {
         return rid;
     }
 
@@ -67,7 +67,7 @@ public class SubPost {
         this.replyName = replyName;
     }
 
-    public void setRid(Long rid) {
+    public void setRid(String rid) {
         this.rid = rid;
     }
 

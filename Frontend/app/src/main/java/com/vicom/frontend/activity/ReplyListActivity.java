@@ -33,7 +33,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ReplyListActivity extends AppCompatActivity {
-    private List<SubPost> subPosts = new ArrayList<SubPost>();
+    private List<SubPost> subPostsWithoutReply = new ArrayList<SubPost>();
+    private List<SubPost> replies = new ArrayList<SubPost>();
+
+
     RecyclerView mRecyclerView;
     MyAdapter mMyAdapter;
 
@@ -53,7 +56,7 @@ public class ReplyListActivity extends AppCompatActivity {
         String pid = intent.getStringExtra("pid");
 
         //修改UI
-        //((TextView) findViewById(R.id.tvtitle)).setText(name);
+        ((TextView) findViewById(R.id.tvtitle)).setText("帖子详情");
 
         //获取帖子
         JSONObject json = new JSONObject();
@@ -79,16 +82,40 @@ public class ReplyListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-            holder.usernameTv.setText(subPosts.get(position).getUsername());
-            holder.contentTv.setText(subPosts.get(position).getContent());
+            holder.usernameTv.setText(subPostsWithoutReply.get(position).getUsername());
+            holder.contentTv.setText(subPostsWithoutReply.get(position).getContent());
             holder.itemReplyView.setOnClickListener(v -> {
-                System.out.println(subPosts.get(position).getId());
+                System.out.println(subPostsWithoutReply.get(position).getId());
             });
+
+            ArrayList<SubPost> thisReplies = new ArrayList<>();
+            for (SubPost subPost : replies) {
+                if (subPost.getType().equals("2")
+                        && subPost.getRid().equals(subPostsWithoutReply.get(position).getId())) {
+                    //第一条评论
+                    holder.replyBoxView.setVisibility(View.VISIBLE);
+                    holder.reply1Tv.setText(subPost.getUsername() + ": " + subPost.getContent());
+                    thisReplies.add(subPost);
+                } else if (thisReplies.size() == 1 &&
+                        subPost.getType().equals("2")
+                        && thisReplies.get(0).getId().equals(subPost.getRid())) {
+                    //第二条评论
+                    holder.reply2Tv.setText(subPost.getUsername() + ": " + subPost.getContent());
+                    holder.reply2Tv.setVisibility(View.VISIBLE);
+                    thisReplies.add(subPost);
+                } else if (thisReplies.size() == 2 &&
+                        subPost.getType().equals("2") &&
+                        (thisReplies.get(0).getId().equals(subPost.getRid()) ||
+                                thisReplies.get(1).getId().equals(subPost.getRid()))
+                ) {
+                    holder.replyMoreTv.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         @Override
         public int getItemCount() {
-            return subPosts.size();
+            return subPostsWithoutReply.size();
         }
     }
 
@@ -97,11 +124,23 @@ public class ReplyListActivity extends AppCompatActivity {
         TextView contentTv;
         View itemReplyView;
 
+        //回复
+        View replyBoxView;
+        TextView reply1Tv;
+        TextView reply2Tv;
+        TextView replyMoreTv;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameTv = itemView.findViewById(R.id.reply_username);
             contentTv = itemView.findViewById(R.id.reply_content);
             itemReplyView = itemView.findViewById(R.id.item_reply_tab);
+
+            //回复
+            replyBoxView = itemView.findViewById(R.id.reply_box);
+            reply1Tv = itemView.findViewById(R.id.reply_1);
+            reply2Tv = itemView.findViewById(R.id.reply_2);
+            replyMoreTv = itemView.findViewById(R.id.reply_more);
         }
     }
 
@@ -109,7 +148,7 @@ public class ReplyListActivity extends AppCompatActivity {
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             mRecyclerView = findViewById(R.id.reply_list_by_post);
-            mRecyclerView.addItemDecoration(new DividerItemDecoration(ReplyListActivity.this,DividerItemDecoration.VERTICAL));
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(ReplyListActivity.this, DividerItemDecoration.VERTICAL));
 
             //添加主楼
             Intent intent = getIntent();
@@ -119,7 +158,7 @@ public class ReplyListActivity extends AppCompatActivity {
             subPostHead.setPicUrl(intent.getStringExtra("picUrl"));
             subPostHead.setUsername(intent.getStringExtra("username"));
 
-            subPosts.add(subPostHead);
+            subPostsWithoutReply.add(subPostHead);
 
             String str = msg.obj.toString().replace("[", "").replace("]", "");
             String[] result = str.split("\\},");
@@ -135,7 +174,14 @@ public class ReplyListActivity extends AppCompatActivity {
                     subPost.setPicUrl(jsonObject.getString("picUrl"));
                     subPost.setUsername(jsonObject.getString("username"));
 
-                    subPosts.add(subPost);
+                    subPost.setType(jsonObject.getString("type"));
+                    subPost.setRid(jsonObject.getString("rid"));
+
+                    if (subPost.getType().equals("1")) {
+                        subPostsWithoutReply.add(subPost);
+                    } else if (subPost.getType().equals("2")) {
+                        replies.add(subPost);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
