@@ -1,4 +1,4 @@
-package com.vicom.backend.requestEntry;
+package com.vicom.backend.entryDTO;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class RequestPost {
-    private Long cid;
+public class UserDTO {
+    private String name;
     private Integer page;
 }

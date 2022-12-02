@@ -2,6 +2,7 @@ package com.vicom.backend.controller;
 
 import com.vicom.backend.common.R;
 import com.vicom.backend.entity.User;
+import com.vicom.backend.entryDTO.UserDTO;
 import com.vicom.backend.entryVO.UserVO;
 import com.vicom.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class UserController {
 
     @PostMapping("/search")
     @ResponseBody
-    public R<ArrayList<UserVO>> search(@RequestBody User user) {
-        return userService.search(user);
+    public R<ArrayList<UserVO>> search(@RequestBody UserDTO userDTO) {
+        return userService.search(userDTO);
     }
 }
