@@ -2,6 +2,7 @@ package com.vicom.frontend.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -80,15 +83,38 @@ public class ReplyListActivity extends AppCompatActivity {
             return myViewHolder;
         }
 
+        @SuppressLint("SetTextI18n")
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-            holder.usernameTv.setText(subPostsWithoutReply.get(position).getUsername());
-            holder.contentTv.setText(subPostsWithoutReply.get(position).getContent());
+            SubPost thisSubPost = subPostsWithoutReply.get(position);
+            holder.usernameTv.setText(thisSubPost.getUsername());
+            holder.contentTv.setText(thisSubPost.getContent());
             holder.itemReplyView.setOnClickListener(v -> {
-                System.out.println(subPostsWithoutReply.get(position).getId());
+                System.out.println(thisSubPost.getId());
             });
 
-            ArrayList<SubPost> thisReplies = new ArrayList<>();
+            List<SubPost> thisReplies = replies.stream().filter(reply -> reply.getRid().equals(thisSubPost.getId())).collect(Collectors.toList());
+
+            if (thisReplies.size() == 1) {
+                holder.replyBoxView.setVisibility(View.VISIBLE);
+                holder.reply1Tv.setText(thisReplies.get(0).getUsername() + ": " + thisReplies.get(0).getContent());
+            } else if (thisReplies.size() == 2) {
+                holder.replyBoxView.setVisibility(View.VISIBLE);
+                holder.reply2Tv.setVisibility(View.VISIBLE);
+                holder.reply1Tv.setText(thisReplies.get(0).getUsername() + ": " + thisReplies.get(0).getContent());
+                holder.reply2Tv.setText(thisReplies.get(1).getUsername() + " 回复 "
+                        + thisReplies.get(1).getReplyName() + " : " + thisReplies.get(1).getContent());
+            } else if (thisReplies.size() > 2) {
+                holder.replyBoxView.setVisibility(View.VISIBLE);
+                holder.reply2Tv.setVisibility(View.VISIBLE);
+                holder.reply1Tv.setText(thisReplies.get(0).getUsername() + ": " + thisReplies.get(0).getContent());
+                holder.reply2Tv.setText(thisReplies.get(1).getUsername() + " 回复 "
+                        + thisReplies.get(1).getReplyName() + " : " + thisReplies.get(1).getContent());
+                holder.replyMoreTv.setVisibility(View.VISIBLE);
+            }
+
+            /*ArrayList<SubPost> thisReplies = new ArrayList<>();
             for (SubPost subPost : replies) {
                 if (subPost.getType().equals("2")
                         && subPost.getRid().equals(subPostsWithoutReply.get(position).getId())) {
@@ -110,7 +136,7 @@ public class ReplyListActivity extends AppCompatActivity {
                 ) {
                     holder.replyMoreTv.setVisibility(View.VISIBLE);
                 }
-            }
+            }*/
         }
 
         @Override
@@ -173,6 +199,7 @@ public class ReplyListActivity extends AppCompatActivity {
                     subPost.setContent(jsonObject.getString("content"));
                     subPost.setPicUrl(jsonObject.getString("picUrl"));
                     subPost.setUsername(jsonObject.getString("username"));
+                    subPost.setReplyName(jsonObject.getString("replyName"));
 
                     subPost.setType(jsonObject.getString("type"));
                     subPost.setRid(jsonObject.getString("rid"));
