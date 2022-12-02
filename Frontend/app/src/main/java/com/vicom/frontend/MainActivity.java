@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.LoginActivity;
 import com.vicom.frontend.activity.RegisterActivity;
+import com.vicom.frontend.fragment.CommunityListFragment;
 import com.vicom.frontend.fragment.FindFragment;
 import com.vicom.frontend.fragment.ListFragment;
 import com.vicom.frontend.fragment.OptionFragment;
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction.add(R.id.id_content, listFragment);
         fragmentTransaction.add(R.id.id_content, findFragment);
         fragmentTransaction.add(R.id.id_content, optionFragment);
+
+        //fragment中的fragment
+        fragmentTransaction.add(R.id.id_item_normal_community_list, new CommunityListFragment());
 
         resetTab(fragmentTransaction);
 

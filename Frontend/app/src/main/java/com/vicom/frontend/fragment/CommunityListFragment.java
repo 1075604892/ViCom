@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,10 +35,10 @@ import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TalkFragment#newInstance} factory method to
+ * Use the {@link CommunityListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TalkFragment extends Fragment {
+public class CommunityListFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,7 +53,7 @@ public class TalkFragment extends Fragment {
     //聊天列表
     private List<Community> communities = new ArrayList<Community>();
 
-    public TalkFragment() {
+    public CommunityListFragment() {
         // Required empty public constructor
     }
 
@@ -68,8 +66,8 @@ public class TalkFragment extends Fragment {
      * @return A new instance of fragment TalkFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TalkFragment newInstance(String param1, String param2) {
-        TalkFragment fragment = new TalkFragment();
+    public static CommunityListFragment newInstance(String param1, String param2) {
+        CommunityListFragment fragment = new CommunityListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -94,7 +92,7 @@ public class TalkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.talk_tab, container, false);
+        view = inflater.inflate(R.layout.fragment_community_list, container, false);
 
         JSONObject json = new JSONObject();
         try {
@@ -112,7 +110,7 @@ public class TalkFragment extends Fragment {
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = View.inflate(getContext(), R.layout.item_community_list, null);
+            View view = View.inflate(getContext(), R.layout.item_normal_community_list, null);
             MyViewHolder myViewHolder = new MyViewHolder(view);
             return myViewHolder;
         }
@@ -120,6 +118,7 @@ public class TalkFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(communities.get(position).getName());
+            holder.contentTv.setText(communities.get(position).getDescription());
             holder.imageView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), PostListActivity.class);
                 intent.putExtra("cid", communities.get(position).getCid());
@@ -139,19 +138,21 @@ public class TalkFragment extends Fragment {
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTv;
         ImageView imageView;
+        TextView contentTv;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTitleTv = itemView.findViewById(R.id.community_name);
-            imageView = itemView.findViewById(R.id.community_image);
+            mTitleTv = itemView.findViewById(R.id.normal_community_name);
+            imageView = itemView.findViewById(R.id.normal_community_image);
+            contentTv = itemView.findViewById(R.id.normal_community_content);
         }
     }
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             //System.out.println("主线程收到子线程处理消息的结果");
-            mRecyclerView = view.findViewById(R.id.community_list);
+            mRecyclerView = view.findViewById(R.id.favor_community_list);
 
             String str = msg.obj.toString().replace("[", "").replace("]", "");
             String[] result = str.split("\\},");
@@ -173,7 +174,7 @@ public class TalkFragment extends Fragment {
             }
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(gridLayoutManager);
         }
     };
