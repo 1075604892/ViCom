@@ -11,6 +11,7 @@
         android:background="@drawable/input"
         android:orientation="horizontal"
         android:padding="4dp"
+        android:id="@+id/community_tab"
         >
         <ImageView
             android:id="@+id/normal_community_image"

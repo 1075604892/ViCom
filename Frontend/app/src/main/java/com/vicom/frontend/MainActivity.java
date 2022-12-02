@@ -23,6 +23,7 @@ import com.vicom.frontend.fragment.FindFragment;
 import com.vicom.frontend.fragment.ListFragment;
 import com.vicom.frontend.fragment.OptionFragment;
 import com.vicom.frontend.fragment.TalkFragment;
+import com.vicom.frontend.fragment.UserListFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static Fragment talkFragment = new TalkFragment();
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //fragment中的fragment
         fragmentTransaction.add(R.id.id_item_normal_community_list, new CommunityListFragment());
+        fragmentTransaction.add(R.id.id_user_list, new UserListFragment());
 
         resetTab(fragmentTransaction);
 
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         optionLinear.setOnClickListener(this);
     }
 
-    public void hid(){
+    public void hid() {
         System.out.println("nini");
     }
 
