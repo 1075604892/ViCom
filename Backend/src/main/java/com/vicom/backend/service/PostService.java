@@ -5,8 +5,8 @@ import com.vicom.backend.entity.Post;
 import com.vicom.backend.entity.User;
 import com.vicom.backend.repository.PostRepository;
 import com.vicom.backend.repository.UserRepository;
-import com.vicom.backend.responseEntry.ResponsePost;
-import com.vicom.backend.responseEntry.ResponseSubPost;
+import com.vicom.backend.entryVO.PostVO;
+import com.vicom.backend.entryVO.SubPostVO;
 import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,44 +25,53 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public R<ArrayList<ResponsePost>> findPostsByCid(Long cid, Pageable pageable) {
+    public R<ArrayList<PostVO>> findPostsByCid(Long cid, Pageable pageable) {
         Page<Post> posts = postRepository.findByCidAndType(cid, Post.TYPE_POST, pageable);
 
-        ArrayList<ResponsePost> responsePosts = new ArrayList<>();
+        ArrayList<PostVO> postVOs = new ArrayList<>();
         for (Post post : posts) {
-            ResponsePost responsePost = new ResponsePost(post);
+            PostVO postVO = new PostVO(post);
 
             User user = userRepository.findById(post.getUid());
-            responsePost.setUsername(user.getUsername());
-            responsePost.setIconUrl(user.getIcon());
-            responsePosts.add(responsePost);
+            postVO.setUsername(user.getUsername());
+            postVO.setIconUrl(user.getIcon());
+            postVO.setUid(user.getId());
+            postVOs.add(postVO);
         }
 
-        return R.success(responsePosts);
+        return R.success(postVOs);
     }
 
-    public R<ArrayList<ResponseSubPost>> findSubPostsByPid(Long pid, Pageable pageable) {
-        Page<Post> posts = postRepository.findByPid(pid, pageable);
+    public R<ArrayList<SubPostVO>> findSubPostsByPid(Long pid, Pageable pageable) {
+        Page<Post> subPosts = postRepository.findByPidAndType(pid, Post.TYPE_SUBPOST, pageable);
+        ArrayList<Post> allReplies = postRepository.findByPidAndType(pid, Post.TYPE_REPLY);
 
-        ArrayList<ResponseSubPost> responseSubPosts = new ArrayList<>();
-        for (Post post : posts) {
-            ResponseSubPost responseSubPost = new ResponseSubPost(post);
+        ArrayList<SubPostVO> subPostVOs = new ArrayList<>();
+        for (Post subPost : subPosts) {
+            SubPostVO subPostVO = new SubPostVO(subPost);
 
-            User user = userRepository.findById(post.getUid());
-            responseSubPost.setUsername(user.getUsername());
-            responseSubPost.setIconUrl(user.getIcon());
+            User user = userRepository.findById(subPost.getUid());
+            subPostVO.setUsername(user.getUsername());
+            subPostVO.setIconUrl(user.getIcon());
+            subPostVO.setUid(user.getId());
+            subPostVOs.add(subPostVO);
 
-            //如果是回复，获取回复对应的人的id
-            if (Objects.equals(post.getType(), Post.TYPE_REPLY)) {
-                Post repliedPost = postRepository.findById(post.getRid());
-                User user1 = userRepository.findById(repliedPost.getUid());
+            for (Post reply : allReplies) {
+                if (Objects.equals(subPost.getId(), reply.getRid())) {
+                    User user1 = userRepository.findById(reply.getUid());
 
-                responseSubPost.setReplyName(user1.getUsername());
+                    SubPostVO replyVO = new SubPostVO(reply);
+                    replyVO.setUsername(user1.getUsername());
+                    replyVO.setIconUrl(user1.getIcon());
+                    replyVO.setUid(user1.getId());
+
+                    User user2 = userRepository.findById(reply.getRUid());
+                    replyVO.setReplyName(user2.getUsername());
+
+                    subPostVOs.add(replyVO);
+                }
             }
-
-            responseSubPosts.add(responseSubPost);
         }
-
-        return R.success(responseSubPosts);
+        return R.success(subPostVOs);
     }
 }
