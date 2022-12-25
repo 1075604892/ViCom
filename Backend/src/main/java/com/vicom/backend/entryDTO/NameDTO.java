@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class NameDTO {
     private String name;
     private Integer page;
 }

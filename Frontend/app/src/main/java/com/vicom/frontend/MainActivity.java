@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,10 +19,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.LoginActivity;
 import com.vicom.frontend.activity.RegisterActivity;
+import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.fragment.CommunityListFragment;
 import com.vicom.frontend.fragment.FindFragment;
 import com.vicom.frontend.fragment.ListFragment;
 import com.vicom.frontend.fragment.OptionFragment;
+import com.vicom.frontend.fragment.PostListFragment;
 import com.vicom.frontend.fragment.TalkFragment;
 import com.vicom.frontend.fragment.UserListFragment;
 
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static Fragment listFragment = new ListFragment();
     private static Fragment findFragment = new FindFragment();
     private static Fragment optionFragment = new OptionFragment();
+
+    //次级Fragment
+    private UserListFragment userListFragment = new UserListFragment();
+    private PostListFragment postListFragment = new PostListFragment();
 
     private LinearLayout talkLinear;
     private LinearLayout listLinear;
@@ -69,7 +76,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //fragment中的fragment
         fragmentTransaction.add(R.id.id_item_normal_community_list, new CommunityListFragment());
-        fragmentTransaction.add(R.id.id_user_list, new UserListFragment());
+        fragmentTransaction.add(R.id.id_community_list, userListFragment);
+
+        fragmentTransaction.add(R.id.id_post_list, postListFragment);
+
+        //结束
 
         resetTab(fragmentTransaction);
 
@@ -156,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private static void resetTab(FragmentTransaction fragmentTransaction) {
-        setTitle("聊吧");
+        setTitle("vicom");
         fragmentTransaction.hide(talkFragment);
         fragmentTransaction.hide(listFragment);
         fragmentTransaction.hide(findFragment);
@@ -167,8 +178,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         title.setText(text);
     }
 
+    public void search(View view) {
+        String name = ((EditText) findViewById(R.id.et_search)).getText().toString();
+        System.out.println("开始搜索内容:" + name);
+        userListFragment.postSearchUserData(name);
+        postListFragment.postSearchPostsData(name);
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 }

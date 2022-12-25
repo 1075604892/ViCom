@@ -19,8 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
+import com.vicom.frontend.activity.ReplyListActivity;
 import com.vicom.frontend.entity.Community;
-import com.vicom.frontend.entity.User;
+import com.vicom.frontend.entity.Post;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,10 +37,14 @@ import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserListFragment#newInstance} factory method to
+ * Use the {@link PostListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserListFragment extends Fragment {
+public class PostListFragment extends Fragment {
+    private List<Post> posts = new ArrayList<Post>();
+    RecyclerView mRecyclerView;
+    MyAdapter mMyAdapter;
+    private View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,13 +54,11 @@ public class UserListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private View view;
 
-    //用户列表
-    //private List<Community> communities = new ArrayList<Community>();
-    private List<User> users = new ArrayList<>();
+    //聊天列表
+    private List<Community> communities = new ArrayList<Community>();
 
-    public UserListFragment() {
+    public PostListFragment() {
         // Required empty public constructor
     }
 
@@ -68,8 +71,8 @@ public class UserListFragment extends Fragment {
      * @return A new instance of fragment TalkFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserListFragment newInstance(String param1, String param2) {
-        UserListFragment fragment = new UserListFragment();
+    public static PostListFragment newInstance(String param1, String param2) {
+        PostListFragment fragment = new PostListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -86,15 +89,12 @@ public class UserListFragment extends Fragment {
         }
     }
 
-    RecyclerView mRecyclerView;
-    MyAdapter mMyAdapter;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.talk_tab, container, false);
+        view = inflater.inflate(R.layout.fragment_post_list, container, false);
 
         return view;
     }
@@ -104,47 +104,87 @@ public class UserListFragment extends Fragment {
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = View.inflate(getContext(), R.layout.item_community_list, null);
+            View view = View.inflate(getContext(), R.layout.item_post_list, null);
+
             MyViewHolder myViewHolder = new MyViewHolder(view);
             return myViewHolder;
         }
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-            holder.mTitleTv.setText(users.get(position).getNickname());
-            /*holder.imageView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), PostListActivity.class);
-                intent.putExtra("cid", communities.get(position).getCid());
-                intent.putExtra("name", communities.get(position).getName());
-                intent.putExtra("description", communities.get(position).getDescription());
-                intent.putExtra("cover", communities.get(position).getCover_path());
+            holder.usernameTv.setText(posts.get(position).getUsername());
+            holder.contentTv.setText(posts.get(position).getContent());
+            holder.titleTv.setText(posts.get(position).getTitle());
+
+            holder.itemPostView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ReplyListActivity.class);
+                intent.putExtra("pid", posts.get(position).getId());
+                intent.putExtra("content", posts.get(position).getTitle() + "\n" + posts.get(position).getContent());
+                intent.putExtra("picUrl", posts.get(position).getPicUrl());
+                intent.putExtra("username", posts.get(position).getUsername());
+
                 startActivity(intent);
-            });*/
+            });
         }
 
         @Override
         public int getItemCount() {
-            return users.size();
+            return posts.size();
         }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView mTitleTv;
-        ImageView imageView;
+        TextView usernameTv;
+        TextView titleTv;
+        TextView contentTv;
+        View itemPostView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTitleTv = itemView.findViewById(R.id.community_name);
-            imageView = itemView.findViewById(R.id.community_image);
+            usernameTv = itemView.findViewById(R.id.post_username);
+            titleTv = itemView.findViewById(R.id.post_title);
+            contentTv = itemView.findViewById(R.id.post_content);
+            itemPostView = itemView.findViewById(R.id.item_post_tab);
         }
     }
 
-    public void postSearchUserData(String name) {
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            mRecyclerView = view.findViewById(R.id.post_list);
+
+            String str = msg.obj.toString().replace("[", "").replace("]", "");
+            String[] result = str.split("\\},");
+            for (int i = 0; i < result.length; i++) {
+                if (i < result.length - 1) {
+                    result[i] += "}";
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject(result[i]);
+                    Post post = new Post();
+                    post.setId(jsonObject.getString("id"));
+                    post.setContent(jsonObject.getString("content"));
+                    post.setPicUrl(jsonObject.getString("picUrl"));
+                    post.setTitle(jsonObject.getString("title"));
+                    post.setUsername(jsonObject.getString("username"));
+
+                    posts.add(post);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            mMyAdapter = new MyAdapter();
+            mRecyclerView.setAdapter(mMyAdapter);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.VERTICAL, false);
+            mRecyclerView.setLayoutManager(gridLayoutManager);
+        }
+    };
+
+    public void postSearchPostsData(String name) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                MediaType type = MediaType.parse("application/json;charset=utf-8");
-
+                System.out.println("发送请求");
                 JSONObject json = new JSONObject();
                 try {
                     json.put("name", name);
@@ -152,13 +192,13 @@ public class UserListFragment extends Fragment {
                     e.printStackTrace();
                 }
 
+                MediaType type = MediaType.parse("application/json;charset=utf-8");
                 RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {
-
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
                             // 指定访问的服务器地址
-                            .url(MyConfiguration.HOST + "/user/search").post(requestBody)
+                            .url(MyConfiguration.HOST + "/post/search").post(requestBody)
                             .build();
                     Response response = client.newCall(request).execute();
 
@@ -181,39 +221,4 @@ public class UserListFragment extends Fragment {
             }
         }).start();
     }
-
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            //System.out.println("主线程收到子线程处理消息的结果");
-            mRecyclerView = view.findViewById(R.id.community_list);
-
-            String str = msg.obj.toString().replace("[", "").replace("]", "");
-            String[] result = str.split("\\},");
-            for (int i = 0; i < result.length; i++) {
-                if (i < result.length - 1) {
-                    result[i] += "}";
-                }
-                try {
-                    JSONObject jsonObject = new JSONObject(result[i]);
-                    User user = new User();
-                    user.setUsername(jsonObject.getString("username"));
-                    user.setEmail(jsonObject.getString("email"));
-                    user.setId(jsonObject.getString("id"));
-                    user.setNickname(jsonObject.getString("nickname"));
-                    user.setIcon(jsonObject.getString("icon"));
-                    user.setStatus(jsonObject.getString("status"));
-                    user.setLevel(jsonObject.getString("level"));
-                    user.setSex(jsonObject.getString("sex"));
-                    users.add(user);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            mMyAdapter = new MyAdapter();
-            mRecyclerView.setAdapter(mMyAdapter);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
-            mRecyclerView.setLayoutManager(gridLayoutManager);
-        }
-    };
 }

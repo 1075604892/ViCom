@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -73,5 +74,16 @@ public class PostService {
             }
         }
         return R.success(subPostVOs);
+    }
+
+    public R<List<PostVO>> search(String name) {
+        List<Post> posts = postRepository.findByTitleOrContentContaining(name);
+        List<PostVO> postVOS = new ArrayList<>();
+
+        for (Post post : posts) {
+            postVOS.add(new PostVO(post));
+        }
+
+        return R.success(postVOS);
     }
 }

@@ -2,13 +2,12 @@ package com.vicom.backend.controller;
 
 import com.vicom.backend.common.R;
 import com.vicom.backend.entity.User;
-import com.vicom.backend.entryDTO.UserDTO;
+import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryVO.UserVO;
 import com.vicom.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class UserController {
 
     @PostMapping("/search")
     @ResponseBody
-    public R<ArrayList<UserVO>> search(@RequestBody UserDTO userDTO) {
-        return userService.search(userDTO);
+    public R<List<UserVO>> search(@RequestBody NameDTO nameDTO) {
+        return userService.search(nameDTO);
     }
 }

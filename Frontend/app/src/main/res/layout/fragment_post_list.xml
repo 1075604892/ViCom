@@ -5,26 +5,18 @@
     android:orientation="vertical"
     >
 
-    <!--<TextView
-        android:id="@+id/textView3"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="聊天界面" />-->
+        android:text="帖子列表"
+        android:textStyle="bold"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/community_list"
+        android:id="@+id/post_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:layout_height="match_parent"
         android:background="@color/white"
         >
     </androidx.recyclerview.widget.RecyclerView>
-
-    <FrameLayout
-        android:id="@+id/id_item_normal_community_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-    </FrameLayout>
 </LinearLayout>

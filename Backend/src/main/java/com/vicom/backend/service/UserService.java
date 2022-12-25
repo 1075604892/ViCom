@@ -2,13 +2,14 @@ package com.vicom.backend.service;
 
 import com.vicom.backend.common.R;
 import com.vicom.backend.entity.User;
-import com.vicom.backend.entryDTO.UserDTO;
+import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryVO.UserVO;
 import com.vicom.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -56,8 +57,14 @@ public class UserService {
         return R.error("登录失败，用户名或密码错误");
     }
 
-    public R<ArrayList<UserVO>> search(UserDTO userDTO) {
+    public R<List<UserVO>> search(NameDTO nameDTO) {
+        List<User> users = userRepository.findByUsernameOrNicknameContaining(nameDTO.getName());
+        List<UserVO> userVOS = new ArrayList<>();
 
+        for (User user : users) {
+            userVOS.add(new UserVO(user));
+        }
 
+        return R.success(userVOS);
     }
 }

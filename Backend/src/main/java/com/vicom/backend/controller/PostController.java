@@ -1,6 +1,7 @@
 package com.vicom.backend.controller;
 
 import com.vicom.backend.common.R;
+import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryDTO.PostDTO;
 import com.vicom.backend.entryDTO.SubPostDTO;
 import com.vicom.backend.entryVO.PostVO;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -33,5 +35,11 @@ public class PostController {
     @ResponseBody
     public R<ArrayList<SubPostVO>> subPostList(@RequestBody SubPostDTO subPostDTO) {
         return postService.findSubPostsByPid(subPostDTO.getPid(), PageRequest.of(subPostDTO.getPage(), 10));
+    }
+
+    @PostMapping("/search")
+    @ResponseBody
+    public R<List<PostVO>> search(@RequestBody NameDTO nameDTO) {
+        return postService.search(nameDTO.getName());
     }
 }
