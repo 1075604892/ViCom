@@ -58,8 +58,15 @@ public class PostListFragment extends Fragment {
     //聊天列表
     private List<Community> communities = new ArrayList<Community>();
 
+    private int type = 0;
+
     public PostListFragment() {
         // Required empty public constructor
+        type = 0;
+    }
+
+    public PostListFragment(int type) {
+        this.type = type;
     }
 
     /**
@@ -173,6 +180,13 @@ public class PostListFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
+            if(!posts.isEmpty()){
+                TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
+                tvTitle.setText("相关帖子");
+                tvTitle.setVisibility(View.VISIBLE);
+            }
+
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.VERTICAL, false);

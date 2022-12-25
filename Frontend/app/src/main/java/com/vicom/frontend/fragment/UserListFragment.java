@@ -210,6 +210,13 @@ public class UserListFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
+            if(!users.isEmpty()){
+                TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
+                tvTitle.setText("相关用户");
+                tvTitle.setVisibility(View.VISIBLE);
+            }
+
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);

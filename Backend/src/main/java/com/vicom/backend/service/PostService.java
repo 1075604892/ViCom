@@ -81,7 +81,10 @@ public class PostService {
         List<PostVO> postVOS = new ArrayList<>();
 
         for (Post post : posts) {
-            postVOS.add(new PostVO(post));
+            PostVO postVO = new PostVO(post);
+            postVO.setUsername(userRepository.findById(post.getUid()).getUsername());
+
+            postVOS.add(postVO);
         }
 
         return R.success(postVOS);

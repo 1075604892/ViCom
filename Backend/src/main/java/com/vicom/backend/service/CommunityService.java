@@ -32,4 +32,8 @@ public class CommunityService {
 
         return R.success(communities);
     }
+
+    public R<List<Community>> search(String name){
+        return R.success(communityRepository.findByNameOrDescriptionContaining(name));
+    }
 }

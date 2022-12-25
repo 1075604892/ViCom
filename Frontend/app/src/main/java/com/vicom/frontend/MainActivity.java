@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //次级Fragment
     private UserListFragment userListFragment = new UserListFragment();
     private PostListFragment postListFragment = new PostListFragment();
+    private CommunityListFragment communityListFragment = new CommunityListFragment(1);
 
     private LinearLayout talkLinear;
     private LinearLayout listLinear;
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //fragment中的fragment
         fragmentTransaction.add(R.id.id_item_normal_community_list, new CommunityListFragment());
-        fragmentTransaction.add(R.id.id_community_list, userListFragment);
-
+        fragmentTransaction.add(R.id.id_user_list,userListFragment);
+        fragmentTransaction.add(R.id.id_community_list, communityListFragment);
         fragmentTransaction.add(R.id.id_post_list, postListFragment);
 
         //结束
@@ -182,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String name = ((EditText) findViewById(R.id.et_search)).getText().toString();
         System.out.println("开始搜索内容:" + name);
         userListFragment.postSearchUserData(name);
+        communityListFragment.postSearchCommunitiesData(name);
         postListFragment.postSearchPostsData(name);
     }
 
