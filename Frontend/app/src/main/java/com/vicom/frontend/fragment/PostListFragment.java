@@ -22,6 +22,7 @@ import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.activity.ReplyListActivity;
 import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.entity.Post;
+import com.vicom.frontend.sqlite.DBManger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,9 +55,6 @@ public class PostListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    //聊天列表
-    private List<Community> communities = new ArrayList<Community>();
 
     private int type = 0;
 
@@ -102,6 +100,12 @@ public class PostListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_post_list, container, false);
+
+        //加载我的发帖内容
+        Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
+        if (type == 1 && uid != -1) {
+            postMyPostsData(uid);
+        }
 
         return view;
     }
@@ -181,7 +185,7 @@ public class PostListFragment extends Fragment {
                 }
             }
 
-            if(!posts.isEmpty()){
+            if (!posts.isEmpty()) {
                 TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
                 tvTitle.setText("相关帖子");
                 tvTitle.setVisibility(View.VISIBLE);
@@ -193,6 +197,48 @@ public class PostListFragment extends Fragment {
             mRecyclerView.setLayoutManager(gridLayoutManager);
         }
     };
+
+    public void postMyPostsData(Long uid) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("发送请求");
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("uid", uid);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                MediaType type = MediaType.parse("application/json;charset=utf-8");
+                RequestBody requestBody = RequestBody.create(type, json.toString());
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            // 指定访问的服务器地址
+                            .url(MyConfiguration.HOST + "/post/queryPostsByUid").post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                    JSONObject responseJson = new JSONObject(response.body().string());
+
+                    //处理返回内容
+                    Message message = new Message();
+                    message.what = responseJson.getInt("code");
+
+                    if (responseJson.getInt("code") == 0) {
+                        message.obj = responseJson.getString("msg");
+                    } else {
+                        message.obj = responseJson.getString("data");
+                    }
+
+                    mHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     public void postSearchPostsData(String name) {
         new Thread(new Runnable() {

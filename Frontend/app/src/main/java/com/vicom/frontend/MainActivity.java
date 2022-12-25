@@ -27,6 +27,7 @@ import com.vicom.frontend.fragment.OptionFragment;
 import com.vicom.frontend.fragment.PostListFragment;
 import com.vicom.frontend.fragment.TalkFragment;
 import com.vicom.frontend.fragment.UserListFragment;
+import com.vicom.frontend.sqlite.DBHelper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static Fragment talkFragment = new TalkFragment();
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PostListFragment postListFragment = new PostListFragment();
     private CommunityListFragment communityListFragment = new CommunityListFragment(1);
 
+    private PostListFragment myPostListFragment = new PostListFragment(1);
+
     private LinearLayout talkLinear;
     private LinearLayout listLinear;
     private LinearLayout findLinear;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton listButton;
     private ImageButton findButton;
     private ImageButton optionButton;
+
+    //数据库
+    private DBHelper dbHelper;
 
     //标题
     private static TextView title;
@@ -65,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
+        //创建数据库
+        dbHelper = new DBHelper(this, 1);
+        dbHelper.getWritableDatabase();
+
         title = (TextView) findViewById(R.id.textView);
 
         //添加界面
@@ -77,9 +87,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //fragment中的fragment
         fragmentTransaction.add(R.id.id_item_normal_community_list, new CommunityListFragment());
-        fragmentTransaction.add(R.id.id_user_list,userListFragment);
+        fragmentTransaction.add(R.id.id_user_list, userListFragment);
         fragmentTransaction.add(R.id.id_community_list, communityListFragment);
         fragmentTransaction.add(R.id.id_post_list, postListFragment);
+
+        fragmentTransaction.add(R.id.id_my_post_list, myPostListFragment);
 
         //结束
 

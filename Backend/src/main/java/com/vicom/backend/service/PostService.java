@@ -43,6 +43,23 @@ public class PostService {
         return R.success(postVOs);
     }
 
+    public R<ArrayList<PostVO>> findPostsByUid(Long uid, Pageable pageable) {
+        Page<Post> posts = postRepository.findByUidAndType(uid, Post.TYPE_POST, pageable);
+
+        ArrayList<PostVO> postVOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostVO postVO = new PostVO(post);
+
+            User user = userRepository.findById(post.getUid());
+            postVO.setUsername(user.getUsername());
+            postVO.setIconUrl(user.getIcon());
+            postVO.setUid(user.getId());
+            postVOs.add(postVO);
+        }
+
+        return R.success(postVOs);
+    }
+
     public R<ArrayList<SubPostVO>> findSubPostsByPid(Long pid, Pageable pageable) {
         Page<Post> subPosts = postRepository.findByPidAndType(pid, Post.TYPE_SUBPOST, pageable);
         ArrayList<Post> allReplies = postRepository.findByPidAndType(pid, Post.TYPE_REPLY);

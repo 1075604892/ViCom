@@ -4,6 +4,7 @@ import com.vicom.backend.common.R;
 import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryDTO.PostDTO;
 import com.vicom.backend.entryDTO.SubPostDTO;
+import com.vicom.backend.entryDTO.UserDTO;
 import com.vicom.backend.entryVO.PostVO;
 import com.vicom.backend.entryVO.SubPostVO;
 import com.vicom.backend.service.PostService;
@@ -35,6 +36,12 @@ public class PostController {
     @ResponseBody
     public R<ArrayList<SubPostVO>> subPostList(@RequestBody SubPostDTO subPostDTO) {
         return postService.findSubPostsByPid(subPostDTO.getPid(), PageRequest.of(subPostDTO.getPage(), 10));
+    }
+
+    @PostMapping("/queryPostsByUid")
+    @ResponseBody
+    public R<ArrayList<PostVO>> queryPostsByUid(@RequestBody UserDTO userDTO) {
+        return postService.findPostsByUid(userDTO.getUid(), PageRequest.of(0, 10));
     }
 
     @PostMapping("/search")

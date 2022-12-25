@@ -5,11 +5,14 @@ import com.vicom.backend.entity.User;
 import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryVO.UserVO;
 import com.vicom.backend.repository.UserRepository;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -51,10 +54,33 @@ public class UserService {
     public R<Object> login(User user) {
         System.out.println(user.toString());
         if (userRepository.existsByUsernameAndPassword(user.getUsername(), user.getPassword())) {
-            return R.success("登录成功");
+            User userInfo = userRepository.findByUsername(user.getUsername());
+
+            String cookie = DigestUtils.md5Hex(userInfo.getUsername() + userInfo.getPassword() + "security");
+            Map<String, Object> map = new HashMap<>();
+            map.put("cookie", cookie);
+            map.put("uid", userInfo.getId());
+
+            return R.success("登录成功", map);
         }
 
         return R.error("登录失败，用户名或密码错误");
+    }
+
+    public R<Object> info(Long uid, String cookie) {
+        User user = userRepository.findById(uid);
+
+        if (user == null) {
+            return R.error("用户uid不存在");
+        }
+
+        String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
+
+        if(realCookie.equals(cookie)){
+            return R.success(new UserVO(user));
+        }
+
+        return R.error("Cookie错误");
     }
 
     public R<List<UserVO>> search(NameDTO nameDTO) {

@@ -14,9 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
+import com.vicom.frontend.sqlite.DBManger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -64,10 +67,22 @@ public class LoginActivity extends AppCompatActivity {
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             //System.out.println("主线程收到子线程处理消息的结果");
-            Toast.makeText(LoginActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
 
             if (msg.what == 1) {
                 //登录成功，退出注册界面
+                try {
+                    Long uid = ((JSONObject) msg.obj).getLong("uid");
+                    String cookie = ((JSONObject) msg.obj).getString("cookie");
+
+                    Map<String, Object> map = DBManger.getInstance(LoginActivity.this).selectCookie();
+
+                    if ((Long) map.get("uid") == -1) {
+                        DBManger.getInstance(LoginActivity.this).addCookie(uid, cookie);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 onBackPressed();
             }
         }
@@ -98,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (responseJson.getInt("code") == 0) {
                         message.obj = responseJson.getString("msg");
                     } else {
-                        message.obj = responseJson.getString("data");
+                        message.obj = new JSONObject(responseJson.getString("map"));
                     }
 
                     mHandler.sendMessage(message);

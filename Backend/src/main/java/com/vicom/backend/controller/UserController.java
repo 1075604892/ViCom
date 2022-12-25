@@ -3,6 +3,7 @@ package com.vicom.backend.controller;
 import com.vicom.backend.common.R;
 import com.vicom.backend.entity.User;
 import com.vicom.backend.entryDTO.NameDTO;
+import com.vicom.backend.entryDTO.UserDTO;
 import com.vicom.backend.entryVO.UserVO;
 import com.vicom.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class UserController {
     @ResponseBody
     public R<Object> login(@RequestBody User user) {
         return userService.login(user);
+    }
+
+    @PostMapping("/info")
+    @ResponseBody
+    public R<Object> info(@RequestBody UserDTO userDTO) {
+        return userService.info(userDTO.getUid(), userDTO.getCookie());
     }
 
     @PostMapping("/search")

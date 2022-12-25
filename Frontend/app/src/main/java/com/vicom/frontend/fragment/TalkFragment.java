@@ -171,6 +171,13 @@ public class TalkFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
+            if(!communities.isEmpty()){
+                TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
+                tvTitle.setText("常逛社区");
+                tvTitle.setVisibility(View.VISIBLE);
+            }
+
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
