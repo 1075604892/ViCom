@@ -35,6 +35,9 @@ public class PostListActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     MyAdapter mMyAdapter;
 
+    private String name;
+    private Long cid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +51,12 @@ public class PostListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         //获取Intent中暂存的数据
-        String name = intent.getStringExtra("name");
-        String cid = intent.getStringExtra("cid");
+        name = intent.getStringExtra("name");
+        cid = Long.valueOf(intent.getStringExtra("cid"));
 
         //修改UI
         ((TextView) findViewById(R.id.tvtitle)).setText(name);
+        findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
 
         //获取帖子
         JSONObject json = new JSONObject();
@@ -85,7 +89,7 @@ public class PostListActivity extends AppCompatActivity {
             holder.itemPostView.setOnClickListener(v -> {
                 Intent intent = new Intent(PostListActivity.this, ReplyListActivity.class);
                 intent.putExtra("pid", posts.get(position).getId());
-                intent.putExtra("content", posts.get(position).getTitle() + "\n" +posts.get(position).getContent());
+                intent.putExtra("content", posts.get(position).getTitle() + "\n" + posts.get(position).getContent());
                 intent.putExtra("picUrl", posts.get(position).getPicUrl());
                 intent.putExtra("username", posts.get(position).getUsername());
 
@@ -181,7 +185,20 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     public void quit(View view) {
-        onBackPressed();
+        if (findViewById(R.id.id_add_post_tab).getVisibility() == View.VISIBLE) {
+            findViewById(R.id.post_list_by_community).setVisibility(View.VISIBLE);
+            findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
+            findViewById(R.id.id_add_post_tab).setVisibility(View.GONE);
+        }else{
+            onBackPressed();
+        }
+    }
+
+    public void addPostTab(View view) {
+        System.out.println("发帖" + "cid: " + cid + ", 社区名: " + name);
+        findViewById(R.id.post_list_by_community).setVisibility(View.GONE);
+        findViewById(R.id.id_jump_to_add_post).setVisibility(View.GONE);
+        findViewById(R.id.id_add_post_tab).setVisibility(View.VISIBLE);
     }
 
     @Override

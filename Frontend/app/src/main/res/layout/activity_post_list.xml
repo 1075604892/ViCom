@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <include layout="@layout/top_register" />
 
@@ -11,7 +10,10 @@
         android:id="@+id/post_list_by_community"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        >
-    </androidx.recyclerview.widget.RecyclerView>
+        android:background="@color/white" />
+
+    <include
+        android:id="@+id/id_add_post_tab"
+        layout="@layout/add_post_tab"
+        android:visibility="gone" />
 </LinearLayout>

@@ -34,6 +34,25 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/id_jump_to_add_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingRight="5dp"
+        android:onClick="addPostTab"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/add_post" />
+
+    </LinearLayout>
+
 </RelativeLayout>
 
 <!--<?xml version="1.0" encoding="utf-8"?>-->

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/box"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:hint="请输入帖子标题"
+            android:maxLines="1"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/box"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:hint="请输入帖子内容"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:minLines="10"
+            android:maxLines="60"
+            android:scrollbars="vertical"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/id_upload_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="uploadPicture"
+        android:text="上传图片" />
+
+    <Button
+        android:id="@+id/id_add_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submitPost"
+        android:text="发帖" />
+</LinearLayout>

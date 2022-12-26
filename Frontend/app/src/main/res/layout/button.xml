@@ -90,7 +90,7 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:saveEnabled="false"
-            android:text="收藏"
+            android:text="通知"
             android:textColor="#191919"
             android:textSize="15sp" />
 
