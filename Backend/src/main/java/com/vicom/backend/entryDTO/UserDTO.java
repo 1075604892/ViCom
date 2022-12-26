@@ -8,6 +8,6 @@ import lombok.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    Long uid;
-    String cookie;
+    private Long uid;
+    private String cookie;
 }

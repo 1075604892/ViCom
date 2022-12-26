@@ -28,19 +28,20 @@ import com.vicom.frontend.fragment.PostListFragment;
 import com.vicom.frontend.fragment.TalkFragment;
 import com.vicom.frontend.fragment.UserListFragment;
 import com.vicom.frontend.sqlite.DBHelper;
+import com.vicom.frontend.sqlite.DBManger;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private static Fragment talkFragment = new TalkFragment();
+    public static TalkFragment talkFragment = new TalkFragment();
     private static Fragment listFragment = new ListFragment();
     private static Fragment findFragment = new FindFragment();
-    private static Fragment optionFragment = new OptionFragment();
+    public static OptionFragment optionFragment = new OptionFragment();
 
     //次级Fragment
     private UserListFragment userListFragment = new UserListFragment();
     private PostListFragment postListFragment = new PostListFragment();
     private CommunityListFragment communityListFragment = new CommunityListFragment(1);
 
-    private PostListFragment myPostListFragment = new PostListFragment(1);
+    public static PostListFragment myPostListFragment = new PostListFragment(1);
 
     private LinearLayout talkLinear;
     private LinearLayout listLinear;
@@ -177,6 +178,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void loginTab(View view) {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    public void logout(View view) {
+        System.out.println("登出");
+        Long uid = (Long) DBManger.getInstance(MainActivity.this).selectCookie().get("uid");
+        DBManger.getInstance(MainActivity.this).deleteCookie(uid);
+
+        optionFragment.unLoginUI();
+        talkFragment.unLoginUIAndHandle();
     }
 
     private static void resetTab(FragmentTransaction fragmentTransaction) {

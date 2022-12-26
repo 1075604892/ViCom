@@ -9,6 +9,9 @@ public class User {
     private String icon;
     private String email;
     private String level;
+    private String privacy;
+    private String introduce;
+
     // 状态 0：正常 1：限制
     private String status;
 
@@ -74,5 +77,21 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
     }
 }

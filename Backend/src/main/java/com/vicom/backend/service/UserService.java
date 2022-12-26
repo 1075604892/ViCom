@@ -45,6 +45,14 @@ public class UserService {
             //todo
         }
 
+        if (user.getIntroduce() == null) {
+            user.setIntroduce("这位用户很懒，还没有简介哦");
+        }
+
+        if (user.getPrivacy() == null) {
+            user.setPrivacy(User.PRIVACY_PUBLIC);
+        }
+
         user.setLevel(0);
         user.setStatus(User.STATUS_NORMAL);
         userRepository.save(user);
@@ -76,7 +84,7 @@ public class UserService {
 
         String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
 
-        if(realCookie.equals(cookie)){
+        if (realCookie.equals(cookie)) {
             return R.success(new UserVO(user));
         }
 

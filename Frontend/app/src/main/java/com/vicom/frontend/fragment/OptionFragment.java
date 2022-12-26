@@ -103,12 +103,20 @@ public class OptionFragment extends Fragment {
         Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
         String cookie = (String) DBManger.getInstance(getContext()).selectCookie().get("cookie");
         if (uid != -1) {
-            view.findViewById(R.id.unlogin_pad).setVisibility(View.GONE);
-            view.findViewById(R.id.id_user_info).setVisibility(View.VISIBLE);
             postUserData(uid, cookie);
         }
 
         return view;
+    }
+
+    public void unLoginUI() {
+        view.findViewById(R.id.unlogin_pad).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.id_user_info).setVisibility(View.GONE);
+    }
+
+    public void loginUI() {
+        view.findViewById(R.id.unlogin_pad).setVisibility(View.GONE);
+        view.findViewById(R.id.id_user_info).setVisibility(View.VISIBLE);
     }
 
     @SuppressLint("HandlerLeak")
@@ -120,9 +128,20 @@ public class OptionFragment extends Fragment {
                 User user = new User();
                 user.setUsername(jsonObject.getString("username"));
                 user.setNickname(jsonObject.getString("nickname"));
+                user.setSex(jsonObject.getString("sex"));
+                user.setIntroduce(jsonObject.getString("introduce"));
 
                 ((TextView) view.findViewById(R.id.id_user_info_nickname)).setText(user.getNickname());
+                ((TextView) view.findViewById(R.id.id_user_info_introduce)).setText(user.getIntroduce());
 
+                if ("0".equals(user.getSex())) {
+                    view.findViewById(R.id.id_female_icon).setVisibility(View.VISIBLE);
+                } else if ("1".equals(user.getSex())) {
+                    view.findViewById(R.id.id_male_icon).setVisibility(View.VISIBLE);
+                }
+
+                view.findViewById(R.id.unlogin_pad).setVisibility(View.GONE);
+                view.findViewById(R.id.id_user_info).setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

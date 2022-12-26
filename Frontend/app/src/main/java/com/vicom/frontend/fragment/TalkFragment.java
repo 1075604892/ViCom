@@ -18,10 +18,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.entity.Community;
+import com.vicom.frontend.sqlite.DBManger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,15 +98,52 @@ public class TalkFragment extends Fragment {
 
         view = inflater.inflate(R.layout.talk_tab, container, false);
 
-        JSONObject json = new JSONObject();
-        try {
-            json.put("id", 1);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        //如果登陆了，则直接显示所有内容
+        Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
+        if (uid != -1) {
+            JSONObject json = new JSONObject();
+            try {
+                json.put("id", uid);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            postFollowCommunitiesData(uid);
+        } else {
+            unLoginUIAndHandle();
         }
-        postFollowCommunitiesData(json);
 
         return view;
+    }
+
+    public void unLoginUIAndHandle() {
+        view.findViewById(R.id.tv_title).setVisibility(View.GONE);
+        view.findViewById(R.id.id_item_normal_community_list).setVisibility(View.GONE);
+        view.findViewById(R.id.id_unLogin_home).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.community_list).setVisibility(View.GONE);
+
+        communities.clear();
+
+        MainActivity.myPostListFragment.cleanPostList();
+    }
+
+    public void loginUIAndHandle() {
+        view.findViewById(R.id.tv_title).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.id_item_normal_community_list).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.id_unLogin_home).setVisibility(View.GONE);
+        view.findViewById(R.id.community_list).setVisibility(View.VISIBLE);
+
+        Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
+        if (uid != -1) {
+            JSONObject json = new JSONObject();
+            try {
+                json.put("id", uid);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            postFollowCommunitiesData(uid);
+        }
+
+        MainActivity.myPostListFragment.postMyPostsData(uid);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
@@ -172,7 +211,7 @@ public class TalkFragment extends Fragment {
                 }
             }
 
-            if(!communities.isEmpty()){
+            if (!communities.isEmpty()) {
                 TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
                 tvTitle.setText("常逛社区");
                 tvTitle.setVisibility(View.VISIBLE);
@@ -185,10 +224,17 @@ public class TalkFragment extends Fragment {
         }
     };
 
-    public void postFollowCommunitiesData(JSONObject json) {
+    public void postFollowCommunitiesData(Long uid) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("id", uid);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 MediaType type = MediaType.parse("application/json;charset=utf-8");
                 RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {

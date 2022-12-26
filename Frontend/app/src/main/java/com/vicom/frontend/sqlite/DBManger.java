@@ -36,12 +36,13 @@ public class DBManger {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("uid", uid);
-
-        String _text = "字符串";
         contentValues.put("cookie", cookie);
 
         writableDatabase.insert("cookie", null, contentValues);
+    }
 
+    public void deleteCookie(long uid) {
+        writableDatabase.delete("cookie", "uid=?", new String[]{uid + ""});
     }
 
     public Map<String, Object> selectCookie() {
@@ -52,7 +53,7 @@ public class DBManger {
         long uid = -1;
         String cookie = "null";
 
-        if (!cursor.isNull(0)) {
+        if (cursor.getCount() > 0) {
             uid = cursor.getLong(cursor.getColumnIndex("uid"));
             cookie = cursor.getString(cursor.getColumnIndex("cookie"));
         }

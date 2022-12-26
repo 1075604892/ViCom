@@ -198,6 +198,10 @@ public class PostListFragment extends Fragment {
         }
     };
 
+    public void cleanPostList() {
+        posts.clear();
+    }
+
     public void postMyPostsData(Long uid) {
         new Thread(new Runnable() {
             @Override

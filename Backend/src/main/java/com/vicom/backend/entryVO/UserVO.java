@@ -21,6 +21,8 @@ public class UserVO {
     // 状态 0：正常 1：限制
     private Integer status;
 
+    private String introduce;
+
     public UserVO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
@@ -30,5 +32,6 @@ public class UserVO {
         this.email = user.getEmail();
         this.level = user.getLevel();
         this.status = user.getStatus();
+        this.introduce = user.getIntroduce();
     }
 }

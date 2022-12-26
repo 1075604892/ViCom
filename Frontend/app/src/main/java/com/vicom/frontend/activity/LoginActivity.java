@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.sqlite.DBManger;
@@ -78,8 +79,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     if ((Long) map.get("uid") == -1) {
                         DBManger.getInstance(LoginActivity.this).addCookie(uid, cookie);
-                    }
 
+                        //更新界面UI
+                        MainActivity.optionFragment.postUserData(uid, cookie);
+                        MainActivity.talkFragment.loginUIAndHandle();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

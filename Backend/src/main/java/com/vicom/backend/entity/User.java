@@ -21,6 +21,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String nickname;
+    private String introduce;
     // 性别 0：女性 1：男性 2：不公布
     private Integer sex;
     private String icon;
@@ -28,6 +29,7 @@ public class User implements Serializable {
     private Integer level;
     // 状态 0：正常 1：限制
     private Integer status;
+    private Integer privacy;
 
     //一些常量
     public static final Integer SEX_FEMALE = 0;
@@ -36,6 +38,9 @@ public class User implements Serializable {
 
     public static final Integer STATUS_NORMAL = 0;
     public static final Integer STATUS_LIMIT = 1;
+
+    public static final Integer PRIVACY_PUBLIC = 0;
+    public static final Integer PRIVACY_PRIVATE = 1;
 
 //    @Override
 //    public String toString(){
