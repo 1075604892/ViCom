@@ -2,11 +2,16 @@ package com.vicom.frontend.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,14 +22,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
+import com.vicom.frontend.sqlite.DBManger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -189,7 +198,8 @@ public class PostListActivity extends AppCompatActivity {
             findViewById(R.id.post_list_by_community).setVisibility(View.VISIBLE);
             findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
             findViewById(R.id.id_add_post_tab).setVisibility(View.GONE);
-        }else{
+            mPathList.clear();
+        } else {
             onBackPressed();
         }
     }
@@ -204,5 +214,129 @@ public class PostListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    private int CHOOSE_CODE = 3; // 只在相册挑选图片的请求码
+
+
+    //选择照片
+    public void choosePicture(View view) {
+        System.out.println("上传照片");
+        Intent albumIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        albumIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); // 是否允许多选
+        albumIntent.setType("image/*"); // 类型为图像
+        startActivityForResult(albumIntent, CHOOSE_CODE); // 打开系统相册
+    }
+
+    private List<String> mPathList = new ArrayList<>(); // 头像文件的路径列表
+
+    //从选择照片的界面返回后
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode == RESULT_OK && requestCode == CHOOSE_CODE) { // 从相册返回
+            if (intent.getData() != null) { // 从相册选择一张照片
+                // 把指定Uri的图片复制一份到内部存储空间，并返回存储路径
+                String imagePath = saveImage(intent.getData());
+                mPathList.add(imagePath);
+            }
+        }
+    }
+
+    // 把指定Uri的图片复制一份到内部存储空间，并返回存储路径
+    private String saveImage(Uri uri) {
+        String uriStr = uri.toString();
+        System.out.println("sdsadsadasdadsa:"+ uriStr.toString());
+        String imageName = uriStr.substring(uriStr.lastIndexOf("/") + 1);
+        String imagePath = String.format("%s/%s.jpg",
+                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), imageName);
+
+        /*// 获得自动缩小后的位图对象
+        Bitmap bitmap = BitmapUtil.getAutoZoomImage(this, uri);
+        // 把位图数据保存到指定路径的图片文件
+        BitmapUtil.saveImage(imagePath, bitmap);
+        iv_face.setImageBitmap(bitmap);*/
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            ImageView pic = findViewById(R.id.id_pic_1);
+
+            switch (mPathList.size()) {
+                case 1:
+                    pic = findViewById(R.id.id_pic_2);
+                    break;
+                case 2:
+                    pic = findViewById(R.id.id_pic_3);
+                    break;
+                case 3:
+                    pic = findViewById(R.id.id_pic_4);
+                    findViewById(R.id.id_pic_add).setVisibility(View.GONE);
+                    break;
+                default:
+                    break;
+            }
+
+            pic.setImageBitmap(bitmap);
+            pic.setVisibility(View.VISIBLE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("图片名称: " + imageName);
+        System.out.println("图片路径:" + imagePath);
+
+        return imagePath;
+    }
+
+    public void submitPost(View view) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("cid", cid);
+                    json.put("uid", DBManger.getInstance(PostListActivity.this).getUid());
+                    json.put("cookie", DBManger.getInstance(PostListActivity.this).getCookie());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //MediaType type = MediaType.parse("application/json;charset=utf-8");
+                //RequestBody requestBody = RequestBody.create(type, json.toString());
+                try {
+                    System.out.println("路径:"+ mPathList.get(0));
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            // 此处可添加上传 参数
+                            // photoFile 表示上传参数名,logo.png 表示图片名字
+                            .addFormDataPart("images", "logo.jpg",
+                                    RequestBody.create(MediaType.parse("multipart/form-data"), new File(mPathList.get(0))))//文件
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url(MyConfiguration.HOST + "/post/")
+                            .post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                    JSONObject responseJson = new JSONObject(response.body().string());
+
+                    //处理返回内容
+                    Message message = new Message();
+                    message.what = responseJson.getInt("code");
+
+                    if (responseJson.getInt("code") == 0) {
+                        message.obj = responseJson.getString("msg");
+                    } else {
+                        message.obj = responseJson.getString("data");
+                    }
+
+                    mHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

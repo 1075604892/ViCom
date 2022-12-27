@@ -66,5 +66,31 @@ public class DBManger {
         return result;
 
     }
+
+    public Long getUid(){
+        Cursor cursor = writableDatabase.query("cookie", null, null, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        long uid = -1;
+
+        if (cursor.getCount() > 0) {
+            uid = cursor.getLong(cursor.getColumnIndex("uid"));
+        }
+
+        return uid;
+    }
+
+    public String getCookie(){
+        Cursor cursor = writableDatabase.query("cookie", null, null, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        String cookie = "null";
+
+        if (cursor.getCount() > 0) {
+            cookie = cursor.getString(cursor.getColumnIndex("cookie"));
+        }
+
+        return cookie;
+    }
 }
 

@@ -11,7 +11,9 @@ import com.vicom.backend.service.PostService;
 import com.vicom.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,18 @@ public class PostController {
     @PostMapping("/search")
     @ResponseBody
     public R<List<PostVO>> search(@RequestBody NameDTO nameDTO) {
+        return postService.search(nameDTO.getName());
+    }
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public R<String> releasePost(@RequestPart("images") MultipartFile[] images) {
+        return postService.releasePost(images);
+    }
+
+    @PostMapping("/getReplyByUid")
+    @ResponseBody
+    public R<List<PostVO>> getReplyByUid(@RequestBody NameDTO nameDTO) {
         return postService.search(nameDTO.getName());
     }
 }
