@@ -21,11 +21,14 @@ public class SubPostVO {
     private String content;//内容
     private String picUrl;//图片路径
 
+    private Long pid;
+
     public SubPostVO(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
         this.picUrl = post.getPicUrl();
         this.type = post.getType();
         this.rid = post.getRid();
+        this.pid = post.getPid();
     }
 }

@@ -9,5 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class PostDTO {
     private Long cid;
+    private Long pid;
     private Integer page;
 }
