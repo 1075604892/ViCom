@@ -34,6 +34,12 @@ public class PostController {
         return postService.findPostsByCid(postDTO.getCid(), PageRequest.of(postDTO.getPage(), 10));
     }
 
+    @PostMapping("/getPostInformationByPid")
+    @ResponseBody
+    public R<PostVO> getPostInformationByPid(@RequestBody PostDTO postDTO) {
+        return postService.getPostInformationByPid(postDTO.getPid());
+    }
+
     @PostMapping("/querySubPostsByPid")
     @ResponseBody
     public R<ArrayList<SubPostVO>> subPostList(@RequestBody SubPostDTO subPostDTO) {
@@ -60,7 +66,7 @@ public class PostController {
 
     @PostMapping("/getReplyByUid")
     @ResponseBody
-    public R<List<PostVO>> getReplyByUid(@RequestBody NameDTO nameDTO) {
-        return postService.search(nameDTO.getName());
+    public R<List<SubPostVO>> getReplyByUid(@RequestBody UserDTO userDTO) {
+        return postService.getReplyByUid(userDTO.getUid(),userDTO.getCookie(), userDTO.getPage());
     }
 }

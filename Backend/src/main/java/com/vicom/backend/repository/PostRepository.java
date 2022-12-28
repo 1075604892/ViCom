@@ -25,4 +25,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p WHERE p.title LIKE %:title% OR p.content LIKE %:title%")
     List<Post> findByTitleOrContentContaining(@Param("title") String title);
+
+    @Query("select p from Post p where p.rUid= :ruid and (p.type= 1 or p.type=2)" +
+            " order by p.releaseDate desc")
+    Page<Post> findByRUidAndTypeOrderByReleaseDateDesc(Long ruid, Pageable pageable);
 }

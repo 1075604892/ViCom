@@ -113,30 +113,6 @@ public class ReplyListActivity extends AppCompatActivity {
                         + thisReplies.get(1).getReplyName() + " : " + thisReplies.get(1).getContent());
                 holder.replyMoreTv.setVisibility(View.VISIBLE);
             }
-
-            /*ArrayList<SubPost> thisReplies = new ArrayList<>();
-            for (SubPost subPost : replies) {
-                if (subPost.getType().equals("2")
-                        && subPost.getRid().equals(subPostsWithoutReply.get(position).getId())) {
-                    //第一条评论
-                    holder.replyBoxView.setVisibility(View.VISIBLE);
-                    holder.reply1Tv.setText(subPost.getUsername() + ": " + subPost.getContent());
-                    thisReplies.add(subPost);
-                } else if (thisReplies.size() == 1 &&
-                        subPost.getType().equals("2")
-                        && thisReplies.get(0).getId().equals(subPost.getRid())) {
-                    //第二条评论
-                    holder.reply2Tv.setText(subPost.getUsername() + ": " + subPost.getContent());
-                    holder.reply2Tv.setVisibility(View.VISIBLE);
-                    thisReplies.add(subPost);
-                } else if (thisReplies.size() == 2 &&
-                        subPost.getType().equals("2") &&
-                        (thisReplies.get(0).getId().equals(subPost.getRid()) ||
-                                thisReplies.get(1).getId().equals(subPost.getRid()))
-                ) {
-                    holder.replyMoreTv.setVisibility(View.VISIBLE);
-                }
-            }*/
         }
 
         @Override

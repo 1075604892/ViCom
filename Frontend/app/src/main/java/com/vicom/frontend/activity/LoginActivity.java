@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         //更新界面UI
                         MainActivity.optionFragment.postUserData(uid, cookie);
                         MainActivity.talkFragment.loginUIAndHandle();
+                        MainActivity.findFragment.loginUIAndHandle();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

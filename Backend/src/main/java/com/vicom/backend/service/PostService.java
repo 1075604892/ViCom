@@ -9,9 +9,11 @@ import com.vicom.backend.repository.UserRepository;
 import com.vicom.backend.entryVO.PostVO;
 import com.vicom.backend.entryVO.SubPostVO;
 import javafx.geometry.Pos;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -100,6 +102,18 @@ public class PostService {
         return R.success(subPostVOs);
     }
 
+    public R<PostVO> getPostInformationByPid(Long pid) {
+        Post post = postRepository.findById(pid);
+        PostVO postVO = new PostVO(post);
+
+        User user = userRepository.findById(post.getUid());
+
+        postVO.setUsername(user.getUsername());
+        postVO.setIconUrl(user.getIcon());
+
+        return R.success(postVO);
+    }
+
     public R<List<PostVO>> search(String name) {
         List<Post> posts = postRepository.findByTitleOrContentContaining(name);
         List<PostVO> postVOS = new ArrayList<>();
@@ -132,5 +146,26 @@ public class PostService {
             return R.error("遇到错误");
         }
         return R.error("遇到未知错误");
+    }
+
+    public R<List<SubPostVO>> getReplyByUid(Long uid, String cookie, Integer page) {
+        User user = userRepository.findById(uid);
+        String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
+
+        if (!realCookie.equals(cookie)) {
+            return R.error("用户没有权限查看回复列表");
+        }
+
+        Page<Post> posts = postRepository.findByRUidAndTypeOrderByReleaseDateDesc(uid, PageRequest.of(page, 10));
+        List<SubPostVO> postVOS = new ArrayList<>();
+
+        for (Post post : posts) {
+            SubPostVO postVO = new SubPostVO(post);
+            postVO.setUsername(userRepository.findById(post.getUid()).getUsername());
+            postVOS.add(postVO);
+        }
+
+
+        return R.success(postVOS);
     }
 }

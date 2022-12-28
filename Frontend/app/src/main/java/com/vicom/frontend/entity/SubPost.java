@@ -10,6 +10,7 @@ public class SubPost {
     private String type;
     private String content;//内容
     private String picUrl;//图片路径
+    private String pid;
 
     public void setPicUrl(String picUrl) {
         this.picUrl = picUrl;
@@ -73,5 +74,13 @@ public class SubPost {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 }

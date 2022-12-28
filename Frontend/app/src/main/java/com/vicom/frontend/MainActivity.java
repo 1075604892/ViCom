@@ -33,7 +33,7 @@ import com.vicom.frontend.sqlite.DBManger;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static TalkFragment talkFragment = new TalkFragment();
     private static Fragment listFragment = new ListFragment();
-    private static Fragment findFragment = new FindFragment();
+    public static FindFragment findFragment = new FindFragment();
     public static OptionFragment optionFragment = new OptionFragment();
 
     //次级Fragment
@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         optionFragment.unLoginUI();
         talkFragment.unLoginUIAndHandle();
+        findFragment.unLoginUIAndHandle();
     }
 
     private static void resetTab(FragmentTransaction fragmentTransaction) {
