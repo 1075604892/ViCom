@@ -343,7 +343,7 @@ public class PostListActivity extends AppCompatActivity {
                     } else {
                         message.obj = responseJson.getString("data");
                         System.out.println("上传成功");
-                        
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
