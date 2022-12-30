@@ -2,6 +2,7 @@ package com.vicom.frontend.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -216,16 +217,14 @@ public class PostListActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private int CHOOSE_CODE = 3; // 只在相册挑选图片的请求码
+    private static final int REQUEST_CODE = 1;
 
 
     //选择照片
     public void choosePicture(View view) {
         System.out.println("上传照片");
-        Intent albumIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        albumIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); // 是否允许多选
-        albumIntent.setType("image/*"); // 类型为图像
-        startActivityForResult(albumIntent, CHOOSE_CODE); // 打开系统相册
+        Intent albumIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(albumIntent, REQUEST_CODE); // 打开系统相册
     }
 
     private List<String> mPathList = new ArrayList<>(); // 头像文件的路径列表
@@ -234,7 +233,7 @@ public class PostListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == RESULT_OK && requestCode == CHOOSE_CODE) { // 从相册返回
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) { // 从相册返回
             if (intent.getData() != null) { // 从相册选择一张照片
                 // 把指定Uri的图片复制一份到内部存储空间，并返回存储路径
                 String imagePath = saveImage(intent.getData());
@@ -245,17 +244,28 @@ public class PostListActivity extends AppCompatActivity {
 
     // 把指定Uri的图片复制一份到内部存储空间，并返回存储路径
     private String saveImage(Uri uri) {
-        String uriStr = uri.toString();
+        String[] filePathColumns = {MediaStore.Images.Media.DATA};
+
+        // 到数据库中查询 , 查询 _data 列字段信息
+        Cursor cursor = getContentResolver().query(
+                uri,
+                filePathColumns,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        // 获取 _data 列所在的列索引
+        int columnIndex = cursor.getColumnIndex(filePathColumns[0]);
+        // 获取图片的存储路径
+        String imagePath = cursor.getString(columnIndex);
+        System.out.println("FilePath: " + imagePath);
+
+
+        /*String uriStr = uri.toString();
         System.out.println("sdsadsadasdadsa:" + uriStr.toString());
         String imageName = uriStr.substring(uriStr.lastIndexOf("/") + 1);
         String imagePath = String.format("%s/%s.jpg",
-                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), imageName);
-
-        /*// 获得自动缩小后的位图对象
-        Bitmap bitmap = BitmapUtil.getAutoZoomImage(this, uri);
-        // 把位图数据保存到指定路径的图片文件
-        BitmapUtil.saveImage(imagePath, bitmap);
-        iv_face.setImageBitmap(bitmap);*/
+                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), imageName);*/
 
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
@@ -282,7 +292,6 @@ public class PostListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.out.println("图片名称: " + imageName);
         System.out.println("图片路径:" + imagePath);
 
         return imagePath;
@@ -305,13 +314,16 @@ public class PostListActivity extends AppCompatActivity {
                 //RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {
                     System.out.println("路径:" + mPathList.get(0));
+
+                    File file = new File(mPathList.get(0));
+
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             // 此处可添加上传 参数
                             // photoFile 表示上传参数名,logo.png 表示图片名字
-                            .addFormDataPart("images", "logo.jpg",
-                                    RequestBody.create(MediaType.parse("multipart/form-data"), new File(mPathList.get(0))))//文件
+                            .addFormDataPart("images",file.getName(),
+                                    RequestBody.create(MediaType.parse("multipart/form-data"), file))//文件
                             .build();
 
                     Request request = new Request.Builder()
@@ -330,9 +342,9 @@ public class PostListActivity extends AppCompatActivity {
                         message.obj = responseJson.getString("msg");
                     } else {
                         message.obj = responseJson.getString("data");
+                        System.out.println("上传成功");
+                        
                     }
-
-                    mHandler.sendMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
