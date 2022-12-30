@@ -246,7 +246,7 @@ public class PostListActivity extends AppCompatActivity {
     // 把指定Uri的图片复制一份到内部存储空间，并返回存储路径
     private String saveImage(Uri uri) {
         String uriStr = uri.toString();
-        System.out.println("sdsadsadasdadsa:"+ uriStr.toString());
+        System.out.println("sdsadsadasdadsa:" + uriStr.toString());
         String imageName = uriStr.substring(uriStr.lastIndexOf("/") + 1);
         String imagePath = String.format("%s/%s.jpg",
                 getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), imageName);
@@ -304,7 +304,7 @@ public class PostListActivity extends AppCompatActivity {
                 //MediaType type = MediaType.parse("application/json;charset=utf-8");
                 //RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {
-                    System.out.println("路径:"+ mPathList.get(0));
+                    System.out.println("路径:" + mPathList.get(0));
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
