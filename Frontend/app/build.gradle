@@ -45,4 +45,7 @@ dependencies {
 
     //添加okhttp3依赖
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    //下拉刷新相关
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }

@@ -64,8 +64,8 @@ public class PostController {
     //发表帖子
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public R<String> releasePost(@RequestPart("images") MultipartFile[] images, @RequestPart("post") Post post) {
-        return postService.releasePost(images, post);
+    public R<String> releasePost(@RequestPart("images") MultipartFile[] images, @RequestPart("post") Post post, @RequestPart("cookie") String cookie) {
+        return postService.releasePost(images, post, cookie);
     }
 
     @PostMapping("/getReplyByUid")

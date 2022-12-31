@@ -13,13 +13,18 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.vicom.frontend.EndLessOnScrollListener;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
@@ -131,7 +136,31 @@ public class PostListActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
+            if (msg.obj.equals("上传成功")) {
+                closePostTab();
+                Toast.makeText(PostListActivity.this, "发帖成功", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             mRecyclerView = findViewById(R.id.post_list_by_community);
+
+            //下拉加载新帖子
+            LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(PostListActivity.this);
+            mRecyclerView.addOnScrollListener(new EndLessOnScrollListener(mLinearLayoutManager) {
+                @Override
+                public void onLoadMore(int currentPage) {
+                    System.out.println("划到底部了");
+                    //获取帖子
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("cid", cid);
+                        json.put("page", currentPage);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    postPostsData(json);
+                }
+            });
 
             String str = msg.obj.toString().replace("[", "").replace("]", "");
             String[] result = str.split("\\},");
@@ -196,9 +225,7 @@ public class PostListActivity extends AppCompatActivity {
 
     public void quit(View view) {
         if (findViewById(R.id.id_add_post_tab).getVisibility() == View.VISIBLE) {
-            findViewById(R.id.post_list_by_community).setVisibility(View.VISIBLE);
-            findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
-            findViewById(R.id.id_add_post_tab).setVisibility(View.GONE);
+            closePostTab();
             mPathList.clear();
         } else {
             onBackPressed();
@@ -212,6 +239,12 @@ public class PostListActivity extends AppCompatActivity {
         findViewById(R.id.id_add_post_tab).setVisibility(View.VISIBLE);
     }
 
+    public void closePostTab() {
+        findViewById(R.id.post_list_by_community).setVisibility(View.VISIBLE);
+        findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
+        findViewById(R.id.id_add_post_tab).setVisibility(View.GONE);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -223,7 +256,7 @@ public class PostListActivity extends AppCompatActivity {
     //选择照片
     public void choosePicture(View view) {
         System.out.println("上传照片");
-        Intent albumIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent albumIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(albumIntent, REQUEST_CODE); // 打开系统相册
     }
 
@@ -260,13 +293,6 @@ public class PostListActivity extends AppCompatActivity {
         String imagePath = cursor.getString(columnIndex);
         System.out.println("FilePath: " + imagePath);
 
-
-        /*String uriStr = uri.toString();
-        System.out.println("sdsadsadasdadsa:" + uriStr.toString());
-        String imageName = uriStr.substring(uriStr.lastIndexOf("/") + 1);
-        String imagePath = String.format("%s/%s.jpg",
-                getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), imageName);*/
-
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
             ImageView pic = findViewById(R.id.id_pic_1);
@@ -298,8 +324,8 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     public void submitPost(View view) {
-        String content = ((TextView)findViewById(R.id.et_title)).getText().toString();
-        String title = ((TextView)findViewById(R.id.et_content)).getText().toString();
+        String content = ((TextView) findViewById(R.id.et_title)).getText().toString();
+        String title = ((TextView) findViewById(R.id.et_content)).getText().toString();
 
         new Thread(new Runnable() {
             @Override
@@ -308,33 +334,39 @@ public class PostListActivity extends AppCompatActivity {
                 try {
                     json.put("content", content);
                     json.put("title", title);
-                    json.put("cid",cid);
+                    json.put("cid", cid);
                     json.put("uid", DBManger.getInstance(PostListActivity.this).getUid());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //MediaType type = MediaType.parse("application/json;charset=utf-8");
-                //RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {
                     System.out.println("路径:" + mPathList.get(0));
                     System.out.println("json格式" + json.toString());
 
-                    File file = new File(mPathList.get(0));
+                    RequestBody bodyParams = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json.toString());
+                    RequestBody bodyParams2 = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), DBManger.getInstance(PostListActivity.this).getCookie());
 
                     OkHttpClient client = new OkHttpClient();
-                    RequestBody requestBody = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            // 此处可添加上传 参数
-                            // photoFile 表示上传参数名,logo.png 表示图片名字
-                            .addFormDataPart("images",file.getName(),
-                                    RequestBody.create(MediaType.parse("multipart/form-data; charset=utf-8"), file))//文件
-                            .addFormDataPart("post",json.toString())
-                            .build();
+
+                    MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM);
+
+                    for (int i = 0; i < mPathList.size(); i++) {
+                        File file = new File(mPathList.get(i));
+
+                        requestBodyBuilder.addFormDataPart("images", file.getName(),
+                                RequestBody.create(MediaType.parse("multipart/form-data; charset=utf-8"), file));
+                    }
+
+                    requestBodyBuilder.addFormDataPart("post", "", bodyParams);
+                    requestBodyBuilder.addFormDataPart("cookie", "", bodyParams2);
+
+                    RequestBody requestBody = requestBodyBuilder.build();
 
                     Request request = new Request.Builder()
                             .url(MyConfiguration.HOST + "/post/")
+                            .post(requestBody)
                             .post(requestBody)
                             .build();
                     Response response = client.newCall(request).execute();
@@ -343,16 +375,15 @@ public class PostListActivity extends AppCompatActivity {
 
                     //处理返回内容
                     Message message = new Message();
-                    System.out.println("返回结果" + response.body().string());
                     message.what = responseJson.getInt("code");
 
                     if (responseJson.getInt("code") == 0) {
                         message.obj = responseJson.getString("msg");
                     } else {
                         message.obj = responseJson.getString("data");
-                        System.out.println("上传成功");
-
                     }
+
+                    mHandler.sendMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

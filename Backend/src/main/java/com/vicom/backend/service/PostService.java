@@ -125,7 +125,15 @@ public class PostService {
         return R.success(postVOS);
     }
 
-    public R<String> releasePost(MultipartFile[] images, Post post) {
+    public R<String> releasePost(MultipartFile[] images, Post post, String cookie) {
+        //验证用户信息
+        User user = userRepository.findById(post.getUid());
+        String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
+        if(!realCookie.equals(cookie)){
+            return R.error("cookie信息错误");
+        }
+
+        //保存图片相关操作
         try {
             StringBuilder paths = new StringBuilder();
             for (MultipartFile image : images) {
@@ -139,7 +147,9 @@ public class PostService {
                 }
             }
 
+            //保存其它信息
             post.setReleaseDate(new Date());
+            post.setType(Post.TYPE_POST);
             post.setPicUrl(paths.toString());
             postRepository.save(post);
 
@@ -147,7 +157,6 @@ public class PostService {
         } catch (Exception e) {
             return R.error("遇到错误");
         }
-        return R.error("遇到未知错误");
     }
 
     public R<List<SubPostVO>> getReplyByUid(Long uid, String cookie, Integer page) {
