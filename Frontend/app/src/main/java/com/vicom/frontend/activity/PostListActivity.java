@@ -298,14 +298,19 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     public void submitPost(View view) {
+        String content = ((TextView)findViewById(R.id.et_title)).getText().toString();
+        String title = ((TextView)findViewById(R.id.et_content)).getText().toString();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 JSONObject json = new JSONObject();
                 try {
-                    json.put("cid", cid);
+                    json.put("content", content);
+                    json.put("title", title);
+                    json.put("cid",cid);
                     json.put("uid", DBManger.getInstance(PostListActivity.this).getUid());
-                    json.put("cookie", DBManger.getInstance(PostListActivity.this).getCookie());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -314,6 +319,7 @@ public class PostListActivity extends AppCompatActivity {
                 //RequestBody requestBody = RequestBody.create(type, json.toString());
                 try {
                     System.out.println("路径:" + mPathList.get(0));
+                    System.out.println("json格式" + json.toString());
 
                     File file = new File(mPathList.get(0));
 
@@ -323,7 +329,8 @@ public class PostListActivity extends AppCompatActivity {
                             // 此处可添加上传 参数
                             // photoFile 表示上传参数名,logo.png 表示图片名字
                             .addFormDataPart("images",file.getName(),
-                                    RequestBody.create(MediaType.parse("multipart/form-data"), file))//文件
+                                    RequestBody.create(MediaType.parse("multipart/form-data; charset=utf-8"), file))//文件
+                            .addFormDataPart("post",json.toString())
                             .build();
 
                     Request request = new Request.Builder()
@@ -336,6 +343,7 @@ public class PostListActivity extends AppCompatActivity {
 
                     //处理返回内容
                     Message message = new Message();
+                    System.out.println("返回结果" + response.body().string());
                     message.what = responseJson.getInt("code");
 
                     if (responseJson.getInt("code") == 0) {

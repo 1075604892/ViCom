@@ -19,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -128,20 +125,25 @@ public class PostService {
         return R.success(postVOS);
     }
 
-    public R<String> releasePost(MultipartFile[] images) {
+    public R<String> releasePost(MultipartFile[] images, Post post) {
         try {
+            StringBuilder paths = new StringBuilder();
             for (MultipartFile image : images) {
                 String imageName = image.getOriginalFilename();
-                if (imageName == null) {
-                    return R.error("没有图片");
-                } else {
+                if (imageName != null) {
                     //保存图片
                     String extension = imageName.substring(imageName.lastIndexOf("."));
                     UUID uuid = UUID.randomUUID();
                     String path = imageFileRepository.saveImage(image.getBytes(), uuid + extension);
-                    return R.success("发帖成功");
+                    paths.append(path).append(" ");
                 }
             }
+
+            post.setReleaseDate(new Date());
+            post.setPicUrl(paths.toString());
+            postRepository.save(post);
+
+            return R.success("上传成功");
         } catch (Exception e) {
             return R.error("遇到错误");
         }
