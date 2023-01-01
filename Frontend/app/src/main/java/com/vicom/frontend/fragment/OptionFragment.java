@@ -25,6 +25,7 @@ import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.entity.User;
 import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 public class OptionFragment extends Fragment {
     private View view;
 
@@ -92,9 +94,12 @@ public class OptionFragment extends Fragment {
                 user.setNickname(jsonObject.getString("nickname"));
                 user.setSex(jsonObject.getString("sex"));
                 user.setIntroduce(jsonObject.getString("introduce"));
+                user.setIcon(jsonObject.getString("icon"));
 
                 ((TextView) view.findViewById(R.id.id_user_info_nickname)).setText(user.getNickname());
                 ((TextView) view.findViewById(R.id.id_user_info_introduce)).setText(user.getIntroduce());
+                System.out.println();
+                ((MyImageView) view.findViewById(R.id.id_user_info_icon)).setImageURL(MyConfiguration.HOST + "/" + user.getIcon());
 
                 if ("0".equals(user.getSex())) {
                     view.findViewById(R.id.id_female_icon).setVisibility(View.VISIBLE);

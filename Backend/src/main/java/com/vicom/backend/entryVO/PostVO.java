@@ -18,10 +18,13 @@ public class PostVO {
     private String content;//内容
     private String picUrl;//图片路径
 
+    private String releaseTime; //发表时间
+
     public PostVO(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.picUrl = post.getPicUrl();
+        this.releaseTime = post.getReleaseDate().toString().substring(0,16);
     }
 }

@@ -32,6 +32,6 @@ public class CommunityController {
     @PostMapping("/search")
     @ResponseBody
     public R<List<Community>> search(@RequestBody NameDTO nameDTO) {
-        return communityService.search(nameDTO.getName());
+        return communityService.search(nameDTO.getName(),nameDTO.getUid());
     }
 }

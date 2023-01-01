@@ -5,6 +5,8 @@ public class Community {
     private String cover_path;
     private String cid;
     private String description;
+    private String followNum;
+    private String isFollowed;
 
     public String getCid() {
         return cid;
@@ -36,5 +38,21 @@ public class Community {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setFollowNum(String followNum) {
+        this.followNum = followNum;
+    }
+
+    public void setIsFollowed(String isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
+    public String getFollowNum() {
+        return followNum;
+    }
+
+    public String getIsFollowed() {
+        return isFollowed;
     }
 }

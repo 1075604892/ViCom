@@ -21,6 +21,8 @@ public class SubPostVO {
     private String content;//内容
     private String picUrl;//图片路径
 
+    private String releaseTime; //发表时间
+
     private Long pid;
 
     public SubPostVO(Post post) {
@@ -30,5 +32,6 @@ public class SubPostVO {
         this.type = post.getType();
         this.rid = post.getRid();
         this.pid = post.getPid();
+        this.releaseTime = post.getReleaseDate().toString().substring(0,16);
     }
 }

@@ -1,11 +1,15 @@
 package com.vicom.frontend.entity;
 
+import java.util.Date;
+
 public class Post {
     private String id;//帖子id
     private String username;//用户名
     private String title;//标题
     private String content;//内容
     private String picUrl;//图片数
+    private String releaseTime;
+    private String iconUrl;
 
     public String getId() {
         return id;
@@ -45,5 +49,21 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setReleaseTime(String releaseTime) {
+        this.releaseTime = releaseTime;
+    }
+
+    public String getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
     }
 }

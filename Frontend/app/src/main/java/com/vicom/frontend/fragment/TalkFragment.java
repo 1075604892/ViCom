@@ -24,6 +24,7 @@ import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,12 +125,15 @@ public class TalkFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(communities.get(position).getName());
+            holder.imageView.setImageURL(MyConfiguration.HOST + "/" + communities.get(position).getCover_path());
             holder.imageView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), PostListActivity.class);
                 intent.putExtra("cid", communities.get(position).getCid());
                 intent.putExtra("name", communities.get(position).getName());
                 intent.putExtra("description", communities.get(position).getDescription());
                 intent.putExtra("cover", communities.get(position).getCover_path());
+                intent.putExtra("followNum", communities.get(position).getFollowNum());
+                intent.putExtra("isFollowed", communities.get(position).getIsFollowed());
                 startActivity(intent);
             });
         }
@@ -142,7 +146,7 @@ public class TalkFragment extends Fragment {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTv;
-        ImageView imageView;
+        MyImageView imageView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -170,6 +174,8 @@ public class TalkFragment extends Fragment {
                     community.setCid(jsonObject.getString("id"));
                     community.setDescription(jsonObject.getString("description"));
                     community.setCover_path(jsonObject.getString("cover"));
+                    community.setFollowNum(jsonObject.getString("followNum"));
+                    community.setIsFollowed(jsonObject.getString("isFollowed"));
                     communities.add(community);
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -25,6 +25,7 @@ import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.entity.SubPost;
 import com.vicom.frontend.entity.User;
 import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,6 +105,8 @@ public class FindFragment extends Fragment {
             SubPost thisSubPost = replies.get(position);
             holder.usernameTv.setText(thisSubPost.getUsername());
             holder.contentTv.setText(thisSubPost.getContent());
+            holder.userImageView.setImageURL(MyConfiguration.HOST + "/" + thisSubPost.getIconUrl());
+            holder.timeTv.setText(thisSubPost.getReleaseTime());
             holder.itemReplyView.setOnClickListener(v -> {
                 postPostInfoData(Long.valueOf(replies.get(position).getPid()));
             });
@@ -119,6 +122,8 @@ public class FindFragment extends Fragment {
         TextView usernameTv;
         TextView contentTv;
         View itemReplyView;
+        TextView timeTv;
+        MyImageView userImageView;
 
         //回复
         View replyBoxView;
@@ -131,6 +136,8 @@ public class FindFragment extends Fragment {
             usernameTv = itemView.findViewById(R.id.reply_username);
             contentTv = itemView.findViewById(R.id.reply_content);
             itemReplyView = itemView.findViewById(R.id.item_reply_tab);
+            userImageView = itemView.findViewById(R.id.user_image);
+            timeTv = itemView.findViewById(R.id.id_post_releaseTime);
 
             //回复
             replyBoxView = itemView.findViewById(R.id.reply_box);
@@ -161,9 +168,11 @@ public class FindFragment extends Fragment {
                     subPost.setUsername(jsonObject.getString("username"));
                     subPost.setReplyName(jsonObject.getString("replyName"));
                     subPost.setPid(jsonObject.getString("pid"));
-
+                    subPost.setIconUrl(jsonObject.getString("iconUrl"));
                     subPost.setType(jsonObject.getString("type"));
                     subPost.setRid(jsonObject.getString("rid"));
+                    subPost.setIconUrl(jsonObject.getString("iconUrl"));
+                    subPost.setReleaseTime(jsonObject.getString("releaseTime"));
 
                     replies.add(subPost);
 
@@ -189,6 +198,7 @@ public class FindFragment extends Fragment {
                 post.setContent(jsonObject.getString("content"));
                 post.setId(jsonObject.getString("id"));
                 post.setPicUrl(jsonObject.getString("picUrl"));
+                post.setIconUrl(jsonObject.getString("iconUrl"));
 
                 //跳转
                 //跳转到相应的帖子
@@ -197,6 +207,8 @@ public class FindFragment extends Fragment {
                 intent.putExtra("content", post.getTitle()+ "\n" +post.getContent());
                 intent.putExtra("picUrl", post.getPicUrl());
                 intent.putExtra("username", post.getUsername());
+                intent.putExtra("iconUrl", post.getIconUrl());
+
                 startActivity(intent);
             } catch (JSONException e) {
                 e.printStackTrace();

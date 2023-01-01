@@ -6,14 +6,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,13 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.vicom.frontend.EndLessOnScrollListener;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +50,13 @@ public class PostListActivity extends AppCompatActivity {
 
     private String name;
     private Long cid;
+    private String description;
+    private String followNum;
+    private String isFollowed;
+    private String picUrl;
+
+    private Integer page = 0;
+    private boolean isEnd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +72,32 @@ public class PostListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         //获取Intent中暂存的数据
         name = intent.getStringExtra("name");
+        description = intent.getStringExtra("description");
         cid = Long.valueOf(intent.getStringExtra("cid"));
+        followNum = intent.getStringExtra("followNum");
+        isFollowed = intent.getStringExtra("isFollowed");
+        picUrl = intent.getStringExtra("cover");
 
         //修改UI
         ((TextView) findViewById(R.id.tvtitle)).setText(name);
         findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
 
+        ((TextView) findViewById(R.id.id_post_info_name)).setText(name);
+        ((TextView) findViewById(R.id.id_post_info_introduce)).setText(description);
+        ((TextView) findViewById(R.id.id_post_info_followNum)).setText(followNum);
+        ((MyImageView) findViewById(R.id.id_community_info_image)).setImageURL(MyConfiguration.HOST + "/" + picUrl);
+
+        if (isFollowed.equals("0")) {
+            findViewById(R.id.id_isFollowed_no).setVisibility(View.VISIBLE);
+        } else if (isFollowed.equals("1")) {
+            findViewById(R.id.id_isFollowed_yes).setVisibility(View.VISIBLE);
+        }
+
         //获取帖子
         JSONObject json = new JSONObject();
         try {
             json.put("cid", cid);
-            json.put("page", 0);
+            json.put("page", page);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,6 +120,17 @@ public class PostListActivity extends AppCompatActivity {
             holder.usernameTv.setText(posts.get(position).getUsername());
             holder.contentTv.setText(posts.get(position).getContent());
             holder.titleTv.setText(posts.get(position).getTitle());
+            holder.timeTv.setText(posts.get(position).getReleaseTime());
+            holder.imageViewUserIcon.setImageURL(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
+
+            String url = posts.get(position).getPicUrl();
+            if (url != null && !url.equals("")) {
+                String[] urls = url.split(" ");
+                for (int i = 0; i < urls.length; i++) {
+                    holder.imageViews[i].setVisibility(View.VISIBLE);
+                    holder.imageViews[i].setImageURL(MyConfiguration.HOST + "/" + urls[i]);
+                }
+            }
 
             holder.itemPostView.setOnClickListener(v -> {
                 Intent intent = new Intent(PostListActivity.this, ReplyListActivity.class);
@@ -107,9 +138,23 @@ public class PostListActivity extends AppCompatActivity {
                 intent.putExtra("content", posts.get(position).getTitle() + "\n" + posts.get(position).getContent());
                 intent.putExtra("picUrl", posts.get(position).getPicUrl());
                 intent.putExtra("username", posts.get(position).getUsername());
+                intent.putExtra("iconUrl", posts.get(position).getIconUrl());
 
                 startActivity(intent);
             });
+
+            //如果加载到最后则继续加载元素
+            if (position == getItemCount() - 1 && !isEnd) {
+                page++;
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("cid", cid);
+                    json.put("page", page);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                postPostsData(json);
+            }
         }
 
         @Override
@@ -123,6 +168,9 @@ public class PostListActivity extends AppCompatActivity {
         TextView titleTv;
         TextView contentTv;
         View itemPostView;
+        TextView timeTv;
+        MyImageView[] imageViews = new MyImageView[3];
+        MyImageView imageViewUserIcon;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,6 +178,11 @@ public class PostListActivity extends AppCompatActivity {
             titleTv = itemView.findViewById(R.id.post_title);
             contentTv = itemView.findViewById(R.id.post_content);
             itemPostView = itemView.findViewById(R.id.item_post_tab);
+            timeTv = itemView.findViewById(R.id.id_post_releaseTime);
+            imageViews[0] = itemView.findViewById(R.id.image1);
+            imageViews[1] = itemView.findViewById(R.id.image2);
+            imageViews[2] = itemView.findViewById(R.id.image3);
+            imageViewUserIcon = itemView.findViewById(R.id.user_image_1);
         }
     }
 
@@ -139,31 +192,33 @@ public class PostListActivity extends AppCompatActivity {
             if (msg.obj.equals("上传成功")) {
                 closePostTab();
                 Toast.makeText(PostListActivity.this, "发帖成功", Toast.LENGTH_LONG).show();
+
+                posts.clear();
+                //重新获取帖子
+                page = 0;
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("cid", cid);
+                    json.put("page", page);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                postPostsData(json);
                 return;
             }
 
             mRecyclerView = findViewById(R.id.post_list_by_community);
 
             //下拉加载新帖子
-            LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(PostListActivity.this);
-            mRecyclerView.addOnScrollListener(new EndLessOnScrollListener(mLinearLayoutManager) {
-                @Override
-                public void onLoadMore(int currentPage) {
-                    System.out.println("划到底部了");
-                    //获取帖子
-                    JSONObject json = new JSONObject();
-                    try {
-                        json.put("cid", cid);
-                        json.put("page", currentPage);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    postPostsData(json);
-                }
-            });
 
             String str = msg.obj.toString().replace("[", "").replace("]", "");
             String[] result = str.split("\\},");
+
+            if (result.length < 10) {
+                isEnd = true;
+            }
+
+
             for (int i = 0; i < result.length; i++) {
                 if (i < result.length - 1) {
                     result[i] += "}";
@@ -176,16 +231,23 @@ public class PostListActivity extends AppCompatActivity {
                     post.setPicUrl(jsonObject.getString("picUrl"));
                     post.setTitle(jsonObject.getString("title"));
                     post.setUsername(jsonObject.getString("username"));
+                    post.setReleaseTime(jsonObject.getString("releaseTime"));
+                    post.setIconUrl(jsonObject.getString("iconUrl"));
 
                     posts.add(post);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
             mMyAdapter = new MyAdapter();
             mRecyclerView.setAdapter(mMyAdapter);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(PostListActivity.this, 1, GridLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(gridLayoutManager);
+
+            if (page > 0) {
+                gridLayoutManager.scrollToPositionWithOffset(8 + (page - 1) * 10, 0);
+            }
         }
     };
 
@@ -234,12 +296,14 @@ public class PostListActivity extends AppCompatActivity {
 
     public void addPostTab(View view) {
         System.out.println("发帖" + "cid: " + cid + ", 社区名: " + name);
+        findViewById(R.id.id_community_info).setVisibility(View.GONE);
         findViewById(R.id.post_list_by_community).setVisibility(View.GONE);
         findViewById(R.id.id_jump_to_add_post).setVisibility(View.GONE);
         findViewById(R.id.id_add_post_tab).setVisibility(View.VISIBLE);
     }
 
     public void closePostTab() {
+        findViewById(R.id.id_community_info).setVisibility(View.VISIBLE);
         findViewById(R.id.post_list_by_community).setVisibility(View.VISIBLE);
         findViewById(R.id.id_jump_to_add_post).setVisibility(View.VISIBLE);
         findViewById(R.id.id_add_post_tab).setVisibility(View.GONE);
@@ -324,8 +388,8 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     public void submitPost(View view) {
-        String content = ((TextView) findViewById(R.id.et_title)).getText().toString();
-        String title = ((TextView) findViewById(R.id.et_content)).getText().toString();
+        String content = ((TextView) findViewById(R.id.et_content)).getText().toString();
+        String title = ((TextView) findViewById(R.id.et_title)).getText().toString();
 
         new Thread(new Runnable() {
             @Override

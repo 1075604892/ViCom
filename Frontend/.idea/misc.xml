@@ -7,9 +7,10 @@
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/box.xml" value="0.26979166666666665" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/input.xml" value="0.26979166666666665" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/drawable/shape_gray_square_bg.xml" value="0.26979166666666665" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_login.xml" value="0.2140625" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_post_list.xml" value="0.2125" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_post_list.xml" value="0.31473684210526315" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_register.xml" value="0.536" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/activity_reply_list.xml" value="0.23489583333333333" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/add_post_tab.xml" value="0.264" />
@@ -24,13 +25,14 @@
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/fragment_reply_list_list.xml" value="0.2390625" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/fragment_second.xml" value="0.2125" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/input.xml" value="0.25364583333333335" />
-        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_community_list.xml" value="0.264" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_community_list.xml" value="0.536" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_normal_community_list.xml" value="0.26614583333333336" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_post_list.xml" value="0.264" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_reply_list.xml" value="0.4" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/item_reply_list2.xml" value="0.4" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/list_tab.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/option_tab.xml" value="0.4" />
+        <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/shape_gray_square_bg.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/talk_tab.xml" value="0.264" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/test.xml" value="0.25364583333333335" />
         <entry key="..\:/wze/program/ViCom/Frontend/app/src/main/res/layout/top.xml" value="0.25364583333333335" />

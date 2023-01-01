@@ -33,7 +33,7 @@ public class PostService {
     private ImageFileRepository imageFileRepository;
 
     public R<ArrayList<PostVO>> findPostsByCid(Long cid, Pageable pageable) {
-        Page<Post> posts = postRepository.findByCidAndType(cid, Post.TYPE_POST, pageable);
+        Page<Post> posts = postRepository.findByCidAndTypeOrderByReleaseDateDesc(cid, Post.TYPE_POST, pageable);
 
         ArrayList<PostVO> postVOs = new ArrayList<>();
         for (Post post : posts) {
@@ -117,7 +117,10 @@ public class PostService {
 
         for (Post post : posts) {
             PostVO postVO = new PostVO(post);
-            postVO.setUsername(userRepository.findById(post.getUid()).getUsername());
+
+            User user = userRepository.findById(post.getUid());
+            postVO.setUsername(user.getUsername());
+            postVO.setIconUrl(user.getIcon());
 
             postVOS.add(postVO);
         }
@@ -172,7 +175,9 @@ public class PostService {
 
         for (Post post : posts) {
             SubPostVO postVO = new SubPostVO(post);
-            postVO.setUsername(userRepository.findById(post.getUid()).getUsername());
+            User user1 = userRepository.findById(post.getUid());
+            postVO.setIconUrl(user1.getIcon());
+            postVO.setUsername(user1.getUsername());
             postVOS.add(postVO);
         }
 

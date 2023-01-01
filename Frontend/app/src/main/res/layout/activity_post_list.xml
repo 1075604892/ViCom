@@ -6,11 +6,106 @@
 
     <include layout="@layout/top_register" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/post_list_by_community"
+    <ScrollView
+        android:id="@+id/id_user_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--贴吧介绍简介-->
+            <LinearLayout
+                android:id="@+id/id_community_info"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
+
+                <com.vicom.frontend.view.MyImageView
+                    android:id="@+id/id_community_info_image"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/user_icon" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/id_post_info_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="社区名"
+                            android:textSize="20dp" />
+
+                        <ImageView
+                            android:layout_marginLeft="20dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/option"/>
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/id_post_info_followNum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/id_post_info_introduce"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="社区简介"
+                        android:textSize="15dp" />
+
+                    <ImageButton
+                        android:id="@+id/id_isFollowed_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/unfollowed"
+                        android:visibility="gone"/>
+
+                    <ImageButton
+                        android:id="@+id/id_isFollowed_yes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/followed"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+            </LinearLayout>
+            <!--贴吧介绍简介结束-->
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/post_list_by_community"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <include
         android:id="@+id/id_add_post_tab"

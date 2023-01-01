@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CommunityRepository extends JpaRepository<Community, Integer> {
-    List<Community> findById(Long id);
+    Community findById(Long id);
 
     @Query("SELECT c FROM Community c WHERE c.name LIKE %:name% OR c.description LIKE %:name%")
     List<Community> findByNameOrDescriptionContaining(@Param("name") String name);

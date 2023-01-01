@@ -15,7 +15,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Post findById(Long id);
 
-    Page<Post> findByCidAndType(Long cid, Integer type, Pageable pageable);
+    Page<Post> findByCidAndTypeOrderByReleaseDateDesc(Long cid, Integer type, Pageable pageable);
 
     Page<Post> findByUidAndType(Long uid, Integer type, Pageable pageable);
 

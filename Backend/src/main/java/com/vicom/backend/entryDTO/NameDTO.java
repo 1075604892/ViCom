@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class NameDTO {
     private String name;
+    private Long uid;
     private String cookie;
     private Integer page;
 }

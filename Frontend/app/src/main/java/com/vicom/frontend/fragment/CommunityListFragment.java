@@ -21,6 +21,8 @@ import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.entity.Community;
+import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,11 +36,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CommunityListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CommunityListFragment extends Fragment {
     private View view;
 
@@ -97,12 +94,15 @@ public class CommunityListFragment extends Fragment {
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(communities.get(position).getName());
             holder.contentTv.setText(communities.get(position).getDescription());
+            holder.imageView.setImageURL(MyConfiguration.HOST + "/" + communities.get(position).getCover_path());
             holder.item.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), PostListActivity.class);
                 intent.putExtra("cid", communities.get(position).getCid());
                 intent.putExtra("name", communities.get(position).getName());
                 intent.putExtra("description", communities.get(position).getDescription());
                 intent.putExtra("cover", communities.get(position).getCover_path());
+                intent.putExtra("followNum", communities.get(position).getFollowNum());
+                intent.putExtra("isFollowed", communities.get(position).getIsFollowed());
                 startActivity(intent);
             });
         }
@@ -115,7 +115,7 @@ public class CommunityListFragment extends Fragment {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTv;
-        ImageView imageView;
+        MyImageView imageView;
         TextView contentTv;
         LinearLayout item;
 
@@ -147,13 +147,15 @@ public class CommunityListFragment extends Fragment {
                     community.setCid(jsonObject.getString("id"));
                     community.setDescription(jsonObject.getString("description"));
                     community.setCover_path(jsonObject.getString("cover"));
+                    community.setFollowNum(jsonObject.getString("followNum"));
+                    community.setIsFollowed(jsonObject.getString("isFollowed"));
                     communities.add(community);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-            if(!communities.isEmpty()){
+            if (!communities.isEmpty()) {
                 TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
                 if (type == 0) {
                     tvTitle.setText("关注社区");
@@ -211,6 +213,7 @@ public class CommunityListFragment extends Fragment {
                 JSONObject json = new JSONObject();
                 try {
                     json.put("name", name);
+                    json.put("uid", DBManger.getInstance(getContext()).getUid());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

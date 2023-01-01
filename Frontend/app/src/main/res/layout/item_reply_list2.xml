@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.vicom.frontend.view.MyImageView
             android:id="@+id/user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -35,6 +35,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/id_post_releaseTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

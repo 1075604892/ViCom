@@ -21,6 +21,7 @@ import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.entity.User;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +73,7 @@ public class UserListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(users.get(position).getNickname());
+            holder.imageView.setImageURL(MyConfiguration.HOST + "/" + users.get(position).getIcon());
             /*holder.imageView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), PostListActivity.class);
                 intent.putExtra("cid", communities.get(position).getCid());
@@ -90,7 +92,7 @@ public class UserListFragment extends Fragment {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTv;
-        ImageView imageView;
+        MyImageView imageView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

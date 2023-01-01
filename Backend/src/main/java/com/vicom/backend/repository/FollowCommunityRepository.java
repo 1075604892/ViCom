@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface FollowCommunityRepository extends JpaRepository<FollowCommunity, Integer> {
     List<FollowCommunity> findByUid(Long uid);
+
+    Long countByCid(Long cid);
 }

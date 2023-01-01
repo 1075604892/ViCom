@@ -2,10 +2,7 @@ package com.vicom.backend.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -21,4 +18,14 @@ public class Community {
     private String name;
     private String cover;
     private String description;
+
+    @Transient
+    private Integer isFollowed;
+
+    public static final Integer FOLLOWED_NO = 0;
+    public static final Integer FOLLOWED_YES = 1;
+    public static final Integer FOLLOWED_UNKNOWN = 2;
+
+    @Transient
+    private Long followNum;
 }

@@ -23,6 +23,7 @@ import com.vicom.frontend.activity.ReplyListActivity;
 import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.sqlite.DBManger;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,6 +90,19 @@ public class PostListFragment extends Fragment {
             holder.usernameTv.setText(posts.get(position).getUsername());
             holder.contentTv.setText(posts.get(position).getContent());
             holder.titleTv.setText(posts.get(position).getTitle());
+            holder.timeTv.setText(posts.get(position).getReleaseTime());
+
+            String url = posts.get(position).getPicUrl();
+            if (url != null && !url.equals("")) {
+                String[] urls = url.split(" ");
+                for (int i = 0; i < urls.length; i++) {
+                    holder.imageViews[i].setVisibility(View.VISIBLE);
+                    holder.imageViews[i].setImageURL(MyConfiguration.HOST + "/" + urls[i]);
+                }
+            }
+
+            System.out.println(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
+            holder.userIconView.setImageURL(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
 
             holder.itemPostView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ReplyListActivity.class);
@@ -96,6 +110,7 @@ public class PostListFragment extends Fragment {
                 intent.putExtra("content", posts.get(position).getTitle() + "\n" + posts.get(position).getContent());
                 intent.putExtra("picUrl", posts.get(position).getPicUrl());
                 intent.putExtra("username", posts.get(position).getUsername());
+                intent.putExtra("iconUrl", posts.get(position).getIconUrl());
 
                 startActivity(intent);
             });
@@ -112,6 +127,10 @@ public class PostListFragment extends Fragment {
         TextView titleTv;
         TextView contentTv;
         View itemPostView;
+        TextView timeTv;
+        MyImageView[] imageViews = new MyImageView[3];
+        MyImageView userIconView;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +138,13 @@ public class PostListFragment extends Fragment {
             titleTv = itemView.findViewById(R.id.post_title);
             contentTv = itemView.findViewById(R.id.post_content);
             itemPostView = itemView.findViewById(R.id.item_post_tab);
+            timeTv = itemView.findViewById(R.id.id_post_releaseTime);
+
+            imageViews[0] = itemView.findViewById(R.id.image1);
+            imageViews[1] = itemView.findViewById(R.id.image2);
+            imageViews[2] = itemView.findViewById(R.id.image3);
+
+            userIconView = itemView.findViewById(R.id.user_image_1);
         }
     }
 
@@ -141,6 +167,8 @@ public class PostListFragment extends Fragment {
                     post.setPicUrl(jsonObject.getString("picUrl"));
                     post.setTitle(jsonObject.getString("title"));
                     post.setUsername(jsonObject.getString("username"));
+                    post.setReleaseTime(jsonObject.getString("releaseTime"));
+                    post.setIconUrl(jsonObject.getString("iconUrl"));
 
                     posts.add(post);
                 } catch (JSONException e) {
