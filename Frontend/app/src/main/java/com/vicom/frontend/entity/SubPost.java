@@ -12,6 +12,8 @@ public class SubPost {
     private String picUrl;//图片路径
     private String pid;
 
+    private String releaseTime;
+
     public void setPicUrl(String picUrl) {
         this.picUrl = picUrl;
     }
@@ -82,5 +84,13 @@ public class SubPost {
 
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    public void setReleaseTime(String releaseTime) {
+        this.releaseTime = releaseTime;
+    }
+
+    public String getReleaseTime() {
+        return releaseTime;
     }
 }

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.vicom.frontend.view.MyImageView
             android:id="@+id/user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"

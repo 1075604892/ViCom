@@ -21,6 +21,7 @@ import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.entity.SubPost;
+import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +94,7 @@ public class ReplyListActivity extends AppCompatActivity {
             holder.itemReplyView.setOnClickListener(v -> {
                 System.out.println(thisSubPost.getId());
             });
+            holder.iconImageView.setImageURL(MyConfiguration.HOST + "/" + thisSubPost.getIconUrl());
 
             List<SubPost> thisReplies = replies.stream().filter(reply -> reply.getRid().equals(thisSubPost.getId())).collect(Collectors.toList());
 
@@ -125,6 +127,7 @@ public class ReplyListActivity extends AppCompatActivity {
         TextView usernameTv;
         TextView contentTv;
         View itemReplyView;
+        MyImageView iconImageView;
 
         //回复
         View replyBoxView;
@@ -137,6 +140,7 @@ public class ReplyListActivity extends AppCompatActivity {
             usernameTv = itemView.findViewById(R.id.reply_username);
             contentTv = itemView.findViewById(R.id.reply_content);
             itemReplyView = itemView.findViewById(R.id.item_reply_tab);
+            iconImageView = itemView.findViewById(R.id.user_image);
 
             //回复
             replyBoxView = itemView.findViewById(R.id.reply_box);
@@ -159,6 +163,7 @@ public class ReplyListActivity extends AppCompatActivity {
             subPostHead.setContent(intent.getStringExtra("content"));
             subPostHead.setPicUrl(intent.getStringExtra("picUrl"));
             subPostHead.setUsername(intent.getStringExtra("username"));
+            subPostHead.setIconUrl(intent.getStringExtra("iconUrl"));
 
             subPostsWithoutReply.add(subPostHead);
 
@@ -176,6 +181,7 @@ public class ReplyListActivity extends AppCompatActivity {
                     subPost.setPicUrl(jsonObject.getString("picUrl"));
                     subPost.setUsername(jsonObject.getString("username"));
                     subPost.setReplyName(jsonObject.getString("replyName"));
+                    subPost.setIconUrl(jsonObject.getString("iconUrl"));
 
                     subPost.setType(jsonObject.getString("type"));
                     subPost.setRid(jsonObject.getString("rid"));
