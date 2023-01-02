@@ -91,6 +91,8 @@ public class UserService {
 
         if (realCookie.equals(cookie)) {
             return R.success(new UserVO(user));
+        } else if (Objects.equals(user.getPrivacy(), User.PRIVACY_PUBLIC)) {
+            return R.success(new UserVO(user));
         }
 
         return R.error("Cookie错误");

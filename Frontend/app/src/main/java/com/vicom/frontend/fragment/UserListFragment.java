@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.PostListActivity;
+import com.vicom.frontend.activity.UserInfoActivity;
 import com.vicom.frontend.entity.Community;
 import com.vicom.frontend.entity.User;
 import com.vicom.frontend.view.MyImageView;
@@ -75,14 +76,11 @@ public class UserListFragment extends Fragment {
         public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.mTitleTv.setText(users.get(position).getNickname());
             holder.imageView.setImageURL(MyConfiguration.HOST + "/" + users.get(position).getIcon());
-            /*holder.imageView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), PostListActivity.class);
-                intent.putExtra("cid", communities.get(position).getCid());
-                intent.putExtra("name", communities.get(position).getName());
-                intent.putExtra("description", communities.get(position).getDescription());
-                intent.putExtra("cover", communities.get(position).getCover_path());
+            holder.imageView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), UserInfoActivity.class);
+                intent.putExtra("uid", users.get(position).getId());
                 startActivity(intent);
-            });*/
+            });
         }
 
         @Override

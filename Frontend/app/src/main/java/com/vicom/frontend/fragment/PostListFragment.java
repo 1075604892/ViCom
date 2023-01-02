@@ -44,6 +44,7 @@ public class PostListFragment extends Fragment {
     private View view;
 
     private int type = 0;
+    private static Long targetUid;
 
     public PostListFragment() {
         // Required empty public constructor
@@ -52,6 +53,11 @@ public class PostListFragment extends Fragment {
 
     public PostListFragment(int type) {
         this.type = type;
+    }
+
+    public PostListFragment(int type, Long uid) {
+        this.type = type;
+        targetUid = uid;
     }
 
     @Override
@@ -70,6 +76,8 @@ public class PostListFragment extends Fragment {
         Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
         if (type == 1 && uid != -1) {
             postMyPostsData(uid);
+        }else if(type == 2){
+            postMyPostsData(targetUid);
         }
 
         return view;

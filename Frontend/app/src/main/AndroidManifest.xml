@@ -33,6 +33,9 @@
             android:name=".activity.ChangeActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.UserInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
