@@ -1,6 +1,7 @@
 package com.vicom.frontend.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,7 @@ import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.entity.SubPost;
+import com.vicom.frontend.sqlite.DBManger;
 import com.vicom.frontend.view.MyImageView;
 
 import org.json.JSONException;
@@ -39,6 +43,7 @@ import okhttp3.Response;
 public class ReplyListActivity extends AppCompatActivity {
     private List<SubPost> subPostsWithoutReply = new ArrayList<SubPost>();
     private List<SubPost> replies = new ArrayList<SubPost>();
+    String pid;
 
 
     RecyclerView mRecyclerView;
@@ -57,7 +62,7 @@ public class ReplyListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         //获取Intent中暂存的数据
-        String pid = intent.getStringExtra("pid");
+        pid = intent.getStringExtra("pid");
 
         //修改UI
         ((TextView) findViewById(R.id.tvtitle)).setText("帖子详情");
@@ -153,6 +158,20 @@ public class ReplyListActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
+            if (msg.obj.toString().equals("回帖成功")) {
+                //获取帖子
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("pid", pid);
+                    json.put("page", 0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                postRepliesData(json);
+                return;
+            }
+
+
             mRecyclerView = findViewById(R.id.reply_list_by_post);
             mRecyclerView.addItemDecoration(new DividerItemDecoration(ReplyListActivity.this, DividerItemDecoration.VERTICAL));
 
@@ -236,6 +255,44 @@ public class ReplyListActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void postSendData(JSONObject json) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaType type = MediaType.parse("application/json;charset=utf-8");
+                RequestBody requestBody = RequestBody.create(type, json.toString());
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            // 指定访问的服务器地址
+                            .url(MyConfiguration.HOST + "/post/reply").post(requestBody)
+                            .build();
+
+                    subPostsWithoutReply.clear();
+                    replies.clear();
+
+                    Response response = client.newCall(request).execute();
+
+                    JSONObject responseJson = new JSONObject(response.body().string());
+
+                    //处理返回内容
+                    Message message = new Message();
+                    message.what = responseJson.getInt("code");
+
+                    if (responseJson.getInt("code") == 0) {
+                        message.obj = responseJson.getString("msg");
+                    } else {
+                        message.obj = responseJson.getString("data");
+                    }
+
+                    mHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public void quit(View view) {
         onBackPressed();
     }
@@ -243,5 +300,26 @@ public class ReplyListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public void send(View view) {
+        //获取帖子
+        JSONObject json = new JSONObject();
+        String content = ((EditText) findViewById(R.id.et_send)).getText().toString();
+
+        try {
+            json.put("pid", pid);
+            json.put("content", content);
+            json.put("uid", DBManger.getInstance(ReplyListActivity.this).getUid());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        postSendData(json);
+
+        ((EditText) findViewById(R.id.et_send)).setText("");
+
+        //收起小键盘
+        InputMethodManager imm = (InputMethodManager) ReplyListActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(ReplyListActivity.this.getWindow().getDecorView().getWindowToken(), 0);
     }
 }
