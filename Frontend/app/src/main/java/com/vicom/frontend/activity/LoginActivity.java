@@ -67,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            //System.out.println("主线程收到子线程处理消息的结果");
 
             if (msg.what == 1) {
                 //登录成功，退出注册界面

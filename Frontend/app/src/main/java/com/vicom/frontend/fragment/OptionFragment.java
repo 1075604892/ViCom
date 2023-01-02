@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
+import com.vicom.frontend.activity.ChangeActivity;
 import com.vicom.frontend.activity.PostListActivity;
 import com.vicom.frontend.activity.ReplyListActivity;
 import com.vicom.frontend.entity.Community;
@@ -41,6 +42,7 @@ import okhttp3.Response;
 
 public class OptionFragment extends Fragment {
     private View view;
+    User user;
 
     private int type = 0;
 
@@ -89,8 +91,9 @@ public class OptionFragment extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject(msg.obj.toString());
 
-                User user = new User();
+                user = new User();
                 user.setUsername(jsonObject.getString("username"));
+                user.setEmail(jsonObject.getString("email"));
                 user.setNickname(jsonObject.getString("nickname"));
                 user.setSex(jsonObject.getString("sex"));
                 user.setIntroduce(jsonObject.getString("introduce"));
@@ -109,6 +112,20 @@ public class OptionFragment extends Fragment {
 
                 view.findViewById(R.id.unlogin_pad).setVisibility(View.GONE);
                 view.findViewById(R.id.id_user_info).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.id_unLogin_user_info).setVisibility(View.GONE);
+
+                //修改键
+                view.findViewById(R.id.button_jump_change).setOnClickListener(v -> {
+                    Intent intent = new Intent(v.getContext(), ChangeActivity.class);
+                    intent.putExtra("uid", DBManger.getInstance(getContext()).getUid());
+                    intent.putExtra("username", user.getUsername());
+                    intent.putExtra("nickname", user.getNickname());
+                    intent.putExtra("sex", user.getSex());
+                    intent.putExtra("introduce", user.getIntroduce());
+                    intent.putExtra("icon", user.getIcon());
+                    intent.putExtra("email",user.getEmail());
+                    startActivity(intent);
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }

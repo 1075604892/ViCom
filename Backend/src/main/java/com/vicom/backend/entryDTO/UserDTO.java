@@ -10,5 +10,6 @@ import lombok.*;
 public class UserDTO {
     private Long uid;
     private String cookie;
+    private String username;
     private Integer page;
 }

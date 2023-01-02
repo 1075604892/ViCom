@@ -7,7 +7,7 @@
 
   <include layout="@layout/top_register" />
 
-  <ImageView
+  <com.vicom.frontend.view.MyImageView
       android:id="@+id/IV_user_icno_register"
       android:layout_width="100dp"
       android:layout_height="100dp"
@@ -17,6 +17,7 @@
       android:clickable="true"
       android:src="@drawable/user_icon"
       android:scaleType="fitXY"
+      android:onClick="uploadIcon"
       />
 
   <!--tips-->
@@ -62,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="3"
-        android:hint="字母或者数字"
+        android:hint="字母或者数字（注册后无法修改）"
         android:maxLines="1"
         android:singleLine="true" />
   </LinearLayout>
@@ -196,7 +197,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="3"
-        android:hint="昵称"
+        android:hint="昵称（可修改）"
         android:maxLines="1"
         android:singleLine="true" />
   </LinearLayout>

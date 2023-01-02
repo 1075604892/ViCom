@@ -73,4 +73,10 @@ public class PostController {
     public R<List<SubPostVO>> getReplyByUid(@RequestBody UserDTO userDTO) {
         return postService.getReplyByUid(userDTO.getUid(), userDTO.getCookie(), userDTO.getPage());
     }
+
+    @PostMapping("/reply")
+    @ResponseBody
+    public R<String> reply(@RequestBody SubPostDTO subPostDTO) {
+        return postService.reply(subPostDTO.getPid(), subPostDTO.getContent(), subPostDTO.getUid());
+    }
 }

@@ -36,6 +36,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 public class PostListFragment extends Fragment {
     private List<Post> posts = new ArrayList<Post>();
     RecyclerView mRecyclerView;
@@ -236,6 +237,7 @@ public class PostListFragment extends Fragment {
     }
 
     public void postSearchPostsData(String name) {
+        posts.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {

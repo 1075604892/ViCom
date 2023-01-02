@@ -205,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void search(View view) {
         String name = ((EditText) findViewById(R.id.et_search)).getText().toString();
         System.out.println("开始搜索内容:" + name);
+
+        //隐藏搜索图片
+        findViewById(R.id.id_unSearch_home).setVisibility(View.GONE);
+
         userListFragment.postSearchUserData(name);
         communityListFragment.postSearchCommunitiesData(name);
         postListFragment.postSearchPostsData(name);

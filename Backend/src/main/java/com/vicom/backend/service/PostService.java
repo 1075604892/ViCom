@@ -132,7 +132,7 @@ public class PostService {
         //验证用户信息
         User user = userRepository.findById(post.getUid());
         String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
-        if(!realCookie.equals(cookie)){
+        if (!realCookie.equals(cookie)) {
             return R.error("cookie信息错误");
         }
 
@@ -183,5 +183,23 @@ public class PostService {
 
 
         return R.success(postVOS);
+    }
+
+    public R<String> reply(Long pid, String content, Long uid) {
+        Post mainPost = postRepository.findById(pid);
+        Post newPost = new Post();
+
+        newPost.setType(Post.TYPE_SUBPOST);
+        newPost.setRid(mainPost.getId());
+        newPost.setUid(uid);
+        newPost.setCid(mainPost.getCid());
+        newPost.setPid(mainPost.getId());
+        newPost.setRUid(mainPost.getUid());
+        newPost.setReleaseDate(new Date());
+        newPost.setContent(content);
+        System.out.println(newPost);
+        postRepository.save(newPost);
+
+        return R.success("回帖成功");
     }
 }

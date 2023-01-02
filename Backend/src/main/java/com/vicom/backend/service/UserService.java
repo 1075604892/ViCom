@@ -1,23 +1,28 @@
 package com.vicom.backend.service;
 
 import com.vicom.backend.common.R;
+import com.vicom.backend.entity.Post;
 import com.vicom.backend.entity.User;
 import com.vicom.backend.entryDTO.NameDTO;
 import com.vicom.backend.entryVO.UserVO;
+import com.vicom.backend.repository.ImageFileRepository;
 import com.vicom.backend.repository.UserRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.jws.soap.SOAPBinding;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ImageFileRepository imageFileRepository;
 
     public R<String> register(User user) {
         // 判断是否有必填字段为空
@@ -100,5 +105,56 @@ public class UserService {
         }
 
         return R.success(userVOS);
+    }
+
+    public R<String> changeIcon(MultipartFile icon, String usernaem) {
+        //User user = userRepository.findById(uid);
+        User user = userRepository.findByUsername(usernaem);
+
+        /*String realCookie = DigestUtils.md5Hex(user.getUsername() + user.getPassword() + "security");
+        if (!realCookie.equals(cookie)) {
+            return R.error("没有权限修改头像");
+        }*/
+
+        String imageName = icon.getOriginalFilename();
+        String path = null;
+        try {
+            if (imageName != null) {
+                //保存图片
+                String extension = imageName.substring(imageName.lastIndexOf("."));
+                UUID uuid = UUID.randomUUID();
+                path = imageFileRepository.saveImage(icon.getBytes(), uuid + extension);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //保存信息
+        user.setIcon(path);
+        userRepository.save(user);
+        return R.success("修改头像成功");
+    }
+
+    public R<String> change(User user) {
+        User userOld = userRepository.findById(user.getId());
+
+        if (user.getEmail() != null) {
+            userOld.setEmail(user.getEmail());
+        }
+
+        if (user.getNickname() != null) {
+            userOld.setNickname(user.getNickname());
+        }
+
+        if (user.getSex() != null) {
+            userOld.setSex(user.getSex());
+        }
+
+        if (user.getIntroduce() != null) {
+            userOld.setIntroduce(user.getIntroduce());
+        }
+
+        userRepository.save(userOld);
+        return R.success("修改成功");
     }
 }

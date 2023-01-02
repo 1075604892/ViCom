@@ -34,6 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 public class UserListFragment extends Fragment {
     private View view;
     private List<User> users = new ArrayList<>();
@@ -102,6 +103,7 @@ public class UserListFragment extends Fragment {
     }
 
     public void postSearchUserData(String name) {
+        users.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -173,7 +175,7 @@ public class UserListFragment extends Fragment {
                 }
             }
 
-            if(!users.isEmpty()){
+            if (!users.isEmpty()) {
                 TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
                 tvTitle.setText("相关用户");
                 tvTitle.setVisibility(View.VISIBLE);

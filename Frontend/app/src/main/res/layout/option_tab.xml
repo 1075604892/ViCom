@@ -53,6 +53,26 @@
             android:text="没有账号？点此注册" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/id_unLogin_user_info"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/login_background"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="登录后查看发帖记录" />
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/id_user_info"
         android:layout_width="match_parent"
@@ -129,6 +149,12 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/button_jump_change"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="修改个人信息" />
 
                 <Button
                     android:id="@+id/button_jump_logout"

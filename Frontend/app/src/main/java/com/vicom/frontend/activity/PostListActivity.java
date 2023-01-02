@@ -431,7 +431,6 @@ public class PostListActivity extends AppCompatActivity {
                     Request request = new Request.Builder()
                             .url(MyConfiguration.HOST + "/post/")
                             .post(requestBody)
-                            .post(requestBody)
                             .build();
                     Response response = client.newCall(request).execute();
 

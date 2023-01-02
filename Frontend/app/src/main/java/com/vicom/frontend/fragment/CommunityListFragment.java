@@ -207,6 +207,7 @@ public class CommunityListFragment extends Fragment {
     }
 
     public void postSearchCommunitiesData(String name) {
+        communities.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {
