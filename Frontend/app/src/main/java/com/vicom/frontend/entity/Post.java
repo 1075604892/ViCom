@@ -10,6 +10,7 @@ public class Post {
     private String picUrl;//图片数
     private String releaseTime;
     private String iconUrl;
+    private String uid;
 
     public String getId() {
         return id;
@@ -65,5 +66,13 @@ public class Post {
 
     public String getIconUrl() {
         return iconUrl;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
     }
 }

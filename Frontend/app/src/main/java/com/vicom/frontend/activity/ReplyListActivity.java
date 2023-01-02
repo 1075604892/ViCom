@@ -96,10 +96,22 @@ public class ReplyListActivity extends AppCompatActivity {
             SubPost thisSubPost = subPostsWithoutReply.get(position);
             holder.usernameTv.setText(thisSubPost.getUsername());
             holder.contentTv.setText(thisSubPost.getContent());
+            holder.timeTv.setText(thisSubPost.getReleaseTime());
             holder.itemReplyView.setOnClickListener(v -> {
                 System.out.println(thisSubPost.getId());
             });
             holder.iconImageView.setImageURL(MyConfiguration.HOST + "/" + thisSubPost.getIconUrl());
+
+            String[] paths = thisSubPost.getPicUrl().split(" ");
+            if(thisSubPost.getPicUrl() != null && paths[0] != null && !thisSubPost.getPicUrl().equals("null")){
+                holder.imagesList.setVisibility(View.VISIBLE);
+
+                for (int i = 0; i < paths.length; i++) {
+                    holder.imageViews[i].setImageURL(MyConfiguration.HOST + "/" + paths[i]);
+                    holder.imageViews[i].setVisibility(View.VISIBLE);
+                }
+            }
+
 
             List<SubPost> thisReplies = replies.stream().filter(reply -> reply.getRid().equals(thisSubPost.getId())).collect(Collectors.toList());
 
@@ -133,6 +145,10 @@ public class ReplyListActivity extends AppCompatActivity {
         TextView contentTv;
         View itemReplyView;
         MyImageView iconImageView;
+        TextView timeTv;
+
+        View imagesList;
+        MyImageView[] imageViews = new MyImageView[3];
 
         //回复
         View replyBoxView;
@@ -146,12 +162,19 @@ public class ReplyListActivity extends AppCompatActivity {
             contentTv = itemView.findViewById(R.id.reply_content);
             itemReplyView = itemView.findViewById(R.id.item_reply_tab);
             iconImageView = itemView.findViewById(R.id.user_image);
+            timeTv = itemView.findViewById(R.id.time_tv);
 
             //回复
             replyBoxView = itemView.findViewById(R.id.reply_box);
             reply1Tv = itemView.findViewById(R.id.reply_1);
             reply2Tv = itemView.findViewById(R.id.reply_2);
             replyMoreTv = itemView.findViewById(R.id.reply_more);
+
+            //图片
+            imagesList = itemView.findViewById(R.id.id_images);
+            imageViews[0] = itemView.findViewById(R.id.image1);
+            imageViews[1] = itemView.findViewById(R.id.image2);
+            imageViews[2] = itemView.findViewById(R.id.image3);
         }
     }
 
@@ -183,6 +206,7 @@ public class ReplyListActivity extends AppCompatActivity {
             subPostHead.setPicUrl(intent.getStringExtra("picUrl"));
             subPostHead.setUsername(intent.getStringExtra("username"));
             subPostHead.setIconUrl(intent.getStringExtra("iconUrl"));
+            subPostHead.setReleaseTime(intent.getStringExtra("releaseTime"));
 
             subPostsWithoutReply.add(subPostHead);
 
@@ -201,7 +225,7 @@ public class ReplyListActivity extends AppCompatActivity {
                     subPost.setUsername(jsonObject.getString("username"));
                     subPost.setReplyName(jsonObject.getString("replyName"));
                     subPost.setIconUrl(jsonObject.getString("iconUrl"));
-
+                    subPost.setReleaseTime(jsonObject.getString("releaseTime"));
                     subPost.setType(jsonObject.getString("type"));
                     subPost.setRid(jsonObject.getString("rid"));
 

@@ -113,6 +113,13 @@ public class PostListFragment extends Fragment {
             System.out.println(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
             holder.userIconView.setImageURL(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
 
+            holder.userIconView.setOnClickListener(v -> {
+                System.out.println("查看用户详情");
+                Intent intent = new Intent(getContext(), ReplyListActivity.class);
+                intent.putExtra("uid", posts.get(position).getUid());
+                startActivity(intent);
+            });
+
             holder.itemPostView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ReplyListActivity.class);
                 intent.putExtra("pid", posts.get(position).getId());
@@ -120,7 +127,7 @@ public class PostListFragment extends Fragment {
                 intent.putExtra("picUrl", posts.get(position).getPicUrl());
                 intent.putExtra("username", posts.get(position).getUsername());
                 intent.putExtra("iconUrl", posts.get(position).getIconUrl());
-
+                intent.putExtra("releaseTime", posts.get(position).getReleaseTime());
                 startActivity(intent);
             });
         }
@@ -178,7 +185,7 @@ public class PostListFragment extends Fragment {
                     post.setUsername(jsonObject.getString("username"));
                     post.setReleaseTime(jsonObject.getString("releaseTime"));
                     post.setIconUrl(jsonObject.getString("iconUrl"));
-
+                    post.setUid(jsonObject.getString("uid"));
                     posts.add(post);
                 } catch (JSONException e) {
                     e.printStackTrace();

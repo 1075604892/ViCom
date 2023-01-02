@@ -88,7 +88,7 @@ public class TalkFragment extends Fragment {
         view.findViewById(R.id.community_list).setVisibility(View.GONE);
 
         communities.clear();
-
+        MainActivity.communityListFragment.communities.clear();
         MainActivity.myPostListFragment.cleanPostList();
     }
 
@@ -98,7 +98,7 @@ public class TalkFragment extends Fragment {
         view.findViewById(R.id.id_unLogin_home).setVisibility(View.GONE);
         view.findViewById(R.id.community_list).setVisibility(View.VISIBLE);
 
-        Long uid = (Long) DBManger.getInstance(getContext()).selectCookie().get("uid");
+        Long uid = (Long) DBManger.getInstance(getContext()).getUid();
         if (uid != -1) {
             JSONObject json = new JSONObject();
             try {
@@ -107,6 +107,7 @@ public class TalkFragment extends Fragment {
                 e.printStackTrace();
             }
             postFollowCommunitiesData(uid);
+            MainActivity.communityListFragment.postFollowCommunitiesData(json);
         }
 
         MainActivity.myPostListFragment.postMyPostsData(uid);
@@ -196,6 +197,7 @@ public class TalkFragment extends Fragment {
     };
 
     public void postFollowCommunitiesData(Long uid) {
+        communities.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {

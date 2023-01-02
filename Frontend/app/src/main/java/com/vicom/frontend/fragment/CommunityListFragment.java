@@ -40,7 +40,7 @@ public class CommunityListFragment extends Fragment {
     private View view;
 
     //聊天列表
-    private List<Community> communities = new ArrayList<Community>();
+    public List<Community> communities = new ArrayList<Community>();
 
     private int type = 0;
 
@@ -70,7 +70,7 @@ public class CommunityListFragment extends Fragment {
         if (type == 0) {
             JSONObject json = new JSONObject();
             try {
-                json.put("id", 1);
+                json.put("id", DBManger.getInstance(getContext()).getUid());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -150,6 +150,7 @@ public class CommunityListFragment extends Fragment {
                     community.setFollowNum(jsonObject.getString("followNum"));
                     community.setIsFollowed(jsonObject.getString("isFollowed"));
                     communities.add(community);
+                    System.out.println(community.getName());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -158,7 +159,7 @@ public class CommunityListFragment extends Fragment {
             if (!communities.isEmpty()) {
                 TextView tvTitle = ((TextView) view.findViewById(R.id.tv_title));
                 if (type == 0) {
-                    tvTitle.setText("关注社区");
+                    tvTitle.setText("全部社区");
                 } else {
                     tvTitle.setText("相关社区");
                 }
@@ -173,6 +174,12 @@ public class CommunityListFragment extends Fragment {
     };
 
     public void postFollowCommunitiesData(JSONObject json) {
+        try {
+            System.out.println("现在的id" + json.get("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        communities.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -182,7 +189,7 @@ public class CommunityListFragment extends Fragment {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
                             // 指定访问的服务器地址
-                            .url(MyConfiguration.HOST + "/community/favoriteCommunities").post(requestBody)
+                            .url(MyConfiguration.HOST + "/community/").post(requestBody)
                             .build();
                     Response response = client.newCall(request).execute();
 

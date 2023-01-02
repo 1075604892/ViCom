@@ -1,10 +1,12 @@
 package com.vicom.frontend;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.vicom.frontend.R;
 import com.vicom.frontend.activity.LoginActivity;
 import com.vicom.frontend.activity.RegisterActivity;
+import com.vicom.frontend.activity.ReplyListActivity;
 import com.vicom.frontend.entity.Post;
 import com.vicom.frontend.fragment.CommunityListFragment;
 import com.vicom.frontend.fragment.FindFragment;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //次级Fragment
     private UserListFragment userListFragment = new UserListFragment();
     private PostListFragment postListFragment = new PostListFragment();
-    private CommunityListFragment communityListFragment = new CommunityListFragment(1);
+    public static CommunityListFragment communityListFragment = new CommunityListFragment(1);
 
     public static PostListFragment myPostListFragment = new PostListFragment(1);
 
@@ -212,6 +215,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userListFragment.postSearchUserData(name);
         communityListFragment.postSearchCommunitiesData(name);
         postListFragment.postSearchPostsData(name);
+
+        //收起小键盘
+        InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(MainActivity.this.getWindow().getDecorView().getWindowToken(), 0);
     }
 
     @Override

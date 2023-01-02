@@ -36,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:id="@+id/time_tv"
                 android:text="回复于15分钟前" />
         </LinearLayout>
     </LinearLayout>
@@ -54,37 +55,41 @@
             android:textSize="18sp" />
 
         <LinearLayout
+            android:id="@+id/id_images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ImageView
+            <com.vicom.frontend.view.MyImageView
                 android:id="@+id/image1"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:src="@drawable/user_icon" />
 
-            <ImageView
+            <com.vicom.frontend.view.MyImageView
                 android:id="@+id/image2"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:src="@drawable/user_icon" />
 
-            <ImageView
+            <com.vicom.frontend.view.MyImageView
                 android:id="@+id/image3"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:src="@drawable/user_icon" />
         </LinearLayout>
 

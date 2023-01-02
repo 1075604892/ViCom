@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.vicom.frontend.MainActivity;
 import com.vicom.frontend.MyConfiguration;
 import com.vicom.frontend.R;
 import com.vicom.frontend.entity.Post;
@@ -122,6 +123,12 @@ public class PostListActivity extends AppCompatActivity {
             holder.titleTv.setText(posts.get(position).getTitle());
             holder.timeTv.setText(posts.get(position).getReleaseTime());
             holder.imageViewUserIcon.setImageURL(MyConfiguration.HOST + "/" + posts.get(position).getIconUrl());
+            holder.imageViewUserIcon.setOnClickListener(v -> {
+                System.out.println("查看用户详情");
+                Intent intent = new Intent(PostListActivity.this, UserInfoActivity.class);
+                intent.putExtra("uid", posts.get(position).getUid());
+                startActivity(intent);
+            });
 
             String url = posts.get(position).getPicUrl();
             if (url != null && !url.equals("")) {
@@ -139,7 +146,7 @@ public class PostListActivity extends AppCompatActivity {
                 intent.putExtra("picUrl", posts.get(position).getPicUrl());
                 intent.putExtra("username", posts.get(position).getUsername());
                 intent.putExtra("iconUrl", posts.get(position).getIconUrl());
-
+                intent.putExtra("releaseTime", posts.get(position).getReleaseTime());
                 startActivity(intent);
             });
 
@@ -189,7 +196,7 @@ public class PostListActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
-            if (msg.obj.equals("上传成功")) {
+            if (msg.obj.toString().equals("上传成功")) {
                 closePostTab();
                 Toast.makeText(PostListActivity.this, "发帖成功", Toast.LENGTH_LONG).show();
 
@@ -205,6 +212,28 @@ public class PostListActivity extends AppCompatActivity {
                 }
                 postPostsData(json);
                 return;
+            }else if(msg.obj.toString().equals("取消收藏成功")){
+                findViewById(R.id.id_isFollowed_no).setVisibility(View.VISIBLE);
+                findViewById(R.id.id_isFollowed_yes).setVisibility(View.GONE);
+                MainActivity.talkFragment.postFollowCommunitiesData(DBManger.getInstance(PostListActivity.this).getUid());
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("id", DBManger.getInstance(PostListActivity.this).getUid());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                MainActivity.communityListFragment.postFollowCommunitiesData(json);
+            }else if(msg.obj.toString().equals("添加收藏成功")){
+                findViewById(R.id.id_isFollowed_no).setVisibility(View.GONE);
+                findViewById(R.id.id_isFollowed_yes).setVisibility(View.VISIBLE);
+                MainActivity.talkFragment.postFollowCommunitiesData(DBManger.getInstance(PostListActivity.this).getUid());
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("id", DBManger.getInstance(PostListActivity.this).getUid());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                MainActivity.communityListFragment.postFollowCommunitiesData(json);
             }
 
             mRecyclerView = findViewById(R.id.post_list_by_community);
@@ -233,7 +262,7 @@ public class PostListActivity extends AppCompatActivity {
                     post.setUsername(jsonObject.getString("username"));
                     post.setReleaseTime(jsonObject.getString("releaseTime"));
                     post.setIconUrl(jsonObject.getString("iconUrl"));
-
+                    post.setUid(jsonObject.getString("uid"));
                     posts.add(post);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -452,5 +481,64 @@ public class PostListActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    public void postFollowData(JSONObject json) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MediaType type = MediaType.parse("application/json;charset=utf-8");
+                RequestBody requestBody = RequestBody.create(type, json.toString());
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            // 指定访问的服务器地址
+                            .url(MyConfiguration.HOST + "/community/follow").post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                    JSONObject responseJson = new JSONObject(response.body().string());
+
+                    //处理返回内容
+                    Message message = new Message();
+                    message.what = responseJson.getInt("code");
+
+                    if (responseJson.getInt("code") == 0) {
+                        message.obj = responseJson.getString("msg");
+                    } else {
+                        message.obj = responseJson.getString("data");
+                    }
+                    mHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void follow(View view) {
+        //获取帖子
+        JSONObject json = new JSONObject();
+        try {
+            json.put("uid", DBManger.getInstance(PostListActivity.this).getUid());
+            json.put("cid", cid);
+            json.put("follow", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        postFollowData(json);
+    }
+
+    public void unfollow(View view) {
+        //获取帖子
+        JSONObject json = new JSONObject();
+        try {
+            json.put("uid", DBManger.getInstance(PostListActivity.this).getUid());
+            json.put("cid", cid);
+            json.put("follow", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        postFollowData(json);
     }
 }

@@ -79,6 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/unfollowed"
+                        android:onClick="follow"
                         android:visibility="gone"/>
 
                     <ImageButton
@@ -87,6 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/followed"
+                        android:onClick="unfollow"
                         android:visibility="gone"/>
 
                 </LinearLayout>
