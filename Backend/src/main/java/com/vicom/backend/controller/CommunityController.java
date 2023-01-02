@@ -29,9 +29,21 @@ public class CommunityController {
         return communityService.followCommunities(user);
     }
 
+    @PostMapping("/")
+    @ResponseBody
+    public R<List<Community>> getAll(@RequestBody User user) {
+        return communityService.getAll(user.getId());
+    }
+
     @PostMapping("/search")
     @ResponseBody
     public R<List<Community>> search(@RequestBody NameDTO nameDTO) {
-        return communityService.search(nameDTO.getName(),nameDTO.getUid());
+        return communityService.search(nameDTO.getName(), nameDTO.getUid());
+    }
+
+    @PostMapping("/follow")
+    @ResponseBody
+    public R<String> follow(@RequestBody NameDTO nameDTO) {
+        return communityService.follow(nameDTO.getUid(), nameDTO.getCid(), nameDTO.getFollow());
     }
 }

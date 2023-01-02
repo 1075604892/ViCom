@@ -10,6 +10,8 @@ import lombok.*;
 public class NameDTO {
     private String name;
     private Long uid;
+    private Long cid;
+    private Integer follow;
     private String cookie;
     private Integer page;
 }

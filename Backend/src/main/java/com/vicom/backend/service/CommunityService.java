@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +30,23 @@ public class CommunityService {
 
         for (FollowCommunity item : allFollowCommunities) {
             Community community = communityRepository.findById(item.getCid());
-            community.setIsFollowed(followCommunityRepository.findByUid(user.getId()) != null ? Community.FOLLOWED_YES : Community.FOLLOWED_NO);
+            community.setIsFollowed(followCommunityRepository.findByUidAndCid(user.getId(), community.getId()) != null ? Community.FOLLOWED_YES : Community.FOLLOWED_NO);
             community.setFollowNum(followCommunityRepository.countByCid(item.getCid()));
 
             communities.add(community);
+        }
+
+        return R.success(communities);
+    }
+
+    public R<List<Community>> getAll(Long uid) {
+
+        List<Community> communities = communityRepository.queryAll();
+
+        for (Community item : communities) {
+            item.setIsFollowed(followCommunityRepository.findByUidAndCid(uid, item.getId()) != null ? Community.FOLLOWED_YES : Community.FOLLOWED_NO);
+            item.setFollowNum(followCommunityRepository.countByCid(item.getId()));
+
         }
 
         return R.success(communities);
@@ -44,7 +58,7 @@ public class CommunityService {
         for (Community community : communities) {
             community.setFollowNum(followCommunityRepository.countByCid(community.getId()));
             if (uid != null && uid != -1) {
-                community.setIsFollowed(followCommunityRepository.findByUid(uid) != null ? Community.FOLLOWED_YES : Community.FOLLOWED_NO);
+                community.setIsFollowed(followCommunityRepository.findByUidAndCid(uid, community.getId()) != null ? Community.FOLLOWED_YES : Community.FOLLOWED_NO);
 
             } else {
                 community.setIsFollowed(Community.FOLLOWED_UNKNOWN);
@@ -52,5 +66,21 @@ public class CommunityService {
         }
 
         return R.success(communities);
+    }
+
+    public R<String> follow(Long uid, Long cid, Integer follow) {
+        if (follow == 0) {
+            FollowCommunity followCommunity = followCommunityRepository.findByUidAndCid(uid, cid);
+            followCommunityRepository.delete(followCommunity);
+            return R.success("取消收藏成功");
+        } else if (follow == 1) {
+            FollowCommunity followCommunity = new FollowCommunity();
+            followCommunity.setCid(cid);
+            followCommunity.setUid(uid);
+            followCommunityRepository.save(followCommunity);
+            return R.success("添加收藏成功");
+        }
+
+        return R.error("修改失败");
     }
 }

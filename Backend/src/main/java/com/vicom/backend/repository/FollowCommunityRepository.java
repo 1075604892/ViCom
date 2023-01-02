@@ -9,5 +9,7 @@ import java.util.List;
 public interface FollowCommunityRepository extends JpaRepository<FollowCommunity, Integer> {
     List<FollowCommunity> findByUid(Long uid);
 
+    FollowCommunity findByUidAndCid(Long uid, Long cid);
+
     Long countByCid(Long cid);
 }
