@@ -216,24 +216,10 @@ public class PostListActivity extends AppCompatActivity {
                 findViewById(R.id.id_isFollowed_no).setVisibility(View.VISIBLE);
                 findViewById(R.id.id_isFollowed_yes).setVisibility(View.GONE);
                 MainActivity.talkFragment.postFollowCommunitiesData(DBManger.getInstance(PostListActivity.this).getUid());
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("id", DBManger.getInstance(PostListActivity.this).getUid());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                MainActivity.communityListFragment.postFollowCommunitiesData(json);
             }else if(msg.obj.toString().equals("添加收藏成功")){
                 findViewById(R.id.id_isFollowed_no).setVisibility(View.GONE);
                 findViewById(R.id.id_isFollowed_yes).setVisibility(View.VISIBLE);
                 MainActivity.talkFragment.postFollowCommunitiesData(DBManger.getInstance(PostListActivity.this).getUid());
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("id", DBManger.getInstance(PostListActivity.this).getUid());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                MainActivity.communityListFragment.postFollowCommunitiesData(json);
             }
 
             mRecyclerView = findViewById(R.id.post_list_by_community);

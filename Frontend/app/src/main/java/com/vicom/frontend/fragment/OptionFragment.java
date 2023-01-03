@@ -104,6 +104,8 @@ public class OptionFragment extends Fragment {
                 System.out.println();
                 ((MyImageView) view.findViewById(R.id.id_user_info_icon)).setImageURL(MyConfiguration.HOST + "/" + user.getIcon());
 
+                view.findViewById(R.id.id_female_icon).setVisibility(View.GONE);
+                view.findViewById(R.id.id_male_icon).setVisibility(View.GONE);
                 if ("0".equals(user.getSex())) {
                     view.findViewById(R.id.id_female_icon).setVisibility(View.VISIBLE);
                 } else if ("1".equals(user.getSex())) {
